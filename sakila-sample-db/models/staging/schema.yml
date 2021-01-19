@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: stg_sakila_film
+    columns:
+      - name: film_id
+        tests:
+          - unique
+          - not_null
