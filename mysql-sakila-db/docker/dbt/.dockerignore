@@ -1,0 +1,12 @@
+# ignore all python files (.py) beside other than app.py
+*.py
+!app.py
+
+# ignore the password file used for manual build
+my_password.txt
+
+# Ignore the .dockerignore file
+.dockerignore
+
+# Ignore all md files
+*.md

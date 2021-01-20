@@ -1,0 +1,22 @@
+---
+version: '3'
+
+services:
+  dbt:
+    image: entechlog/dbt${DBT_VERSION_TAG}
+    container_name: dbt
+    build: ./docker/dbt/
+    env_file:
+      - ./docker/dbt/.env
+    command: 
+      - bash 
+      - -c 
+      - |
+        echo "Launching dbt"
+        #
+        sleep infinity
+    restart: unless-stopped
+    volumes:
+      - ./.dbt/profiles.yml:/secure/profile/profiles.yml
+      - ./dbt:/data/dbt
+      
