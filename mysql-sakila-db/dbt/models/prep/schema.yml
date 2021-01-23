@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_sakila_film
+  - name: sakila_film
     columns:
       - name: film_id
         tests:
