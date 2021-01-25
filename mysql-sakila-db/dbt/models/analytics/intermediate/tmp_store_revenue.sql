@@ -1,6 +1,6 @@
 with payment as (
 
-    select * from {{ ref('prep_sakila_payment') }}
+    select * from {{ ref('sakila_payment') }}
 
 ),
 

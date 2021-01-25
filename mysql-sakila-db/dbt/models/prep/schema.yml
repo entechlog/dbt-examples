@@ -1,9 +1,0 @@
-version: 2
-
-models:
-  - name: sakila_film
-    columns:
-      - name: film_id
-        tests:
-          - unique
-          - not_null

@@ -1,0 +1,33 @@
+version: 2
+
+sources:
+  - name: raw
+    tables:
+      - name: sakila_actor
+      - name: sakila_address
+      - name: sakila_category
+      - name: sakila_city
+      - name: sakila_country
+      - name: sakila_customer
+      - name: sakila_film
+      - name: sakila_film_actor
+      - name: sakila_film_category
+      - name: sakila_film_text
+      - name: sakila_inventory
+      - name: sakila_language
+      - name: sakila_payment
+      - name: sakila_rental
+      - name: sakila_staff
+      - name: sakila_store
+
+  - name: reference
+    tables:
+      - name: country
+
+models:
+  - name: customer
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
