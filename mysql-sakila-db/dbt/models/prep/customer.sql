@@ -1,3 +1,10 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key='customer_id'
+    )
+}}
+
 WITH source
 AS (
 	SELECT scus.customer_id,
@@ -12,11 +19,15 @@ AS (
 		sadd.postal_code,
 		sadd.phone,
 		scity.city,
-		scou.country
+		scou.country,
+		scus.last_update
 	FROM {{ source('raw', 'sakila_customer') }} scus
 	LEFT JOIN {{ source('raw', 'sakila_address') }} sadd ON sadd.address_id = scus.address_id
 	LEFT JOIN {{ source('raw', 'sakila_city') }} scity ON scity.city_id = sadd.city_id
 	LEFT JOIN {{ source('raw', 'sakila_country') }} scou ON scou.country_id = scity.country_id
+	{% if is_incremental() %}  
+      where scus.last_update > (select max(scus.last_update) from {{ this }})
+    {% endif %}
 	),
 
 renamed
@@ -32,7 +43,8 @@ AS (
 		postal_code AS customer_postal_code,
 		phone AS customer_phone_number,
 		city AS customer_city,
-		country AS customer_country
+		country AS customer_country,
+		last_update
 	FROM source
 	)
 	
