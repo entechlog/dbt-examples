@@ -48,3 +48,6 @@ models:
       - name: customer_city
       - name: customer_country
       - name: last_update
+
+  - name: film
+    description: '{{ doc("film_overview") }}' 
