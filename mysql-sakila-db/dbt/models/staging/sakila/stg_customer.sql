@@ -21,10 +21,10 @@ AS (
 		scity.city,
 		scou.country,
 		scus.last_update
-	FROM {{ source('raw', 'sakila_customer') }} scus
-	LEFT JOIN {{ source('raw', 'sakila_address') }} sadd ON sadd.address_id = scus.address_id
-	LEFT JOIN {{ source('raw', 'sakila_city') }} scity ON scity.city_id = sadd.city_id
-	LEFT JOIN {{ source('raw', 'sakila_country') }} scou ON scou.country_id = scity.country_id
+	FROM {{ source('sakila', 'customer') }} scus
+	LEFT JOIN {{ source('sakila', 'address') }} sadd ON sadd.address_id = scus.address_id
+	LEFT JOIN {{ source('sakila', 'city') }} scity ON scity.city_id = sadd.city_id
+	LEFT JOIN {{ source('sakila', 'country') }} scou ON scou.country_id = scity.country_id
 	{% if is_incremental() %}
 		HAVING scus.last_update > (select max(last_update) from {{ this }})
     {% endif %}

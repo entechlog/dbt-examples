@@ -10,11 +10,11 @@ AS (
 		ss.manager_staff_id,
 		sstaff.first_name,
 		sstaff.last_name
-	FROM {{ source('raw', 'sakila_store') }} ss
-	LEFT JOIN {{ source('raw', 'sakila_address') }} sadd ON sadd.address_id = ss.address_id
-	LEFT JOIN {{ source('raw', 'sakila_city') }} scity ON scity.city_id = sadd.city_id
-	LEFT JOIN {{ source('raw', 'sakila_country') }} scou ON scou.country_id = scity.country_id
-	LEFT JOIN {{ source('raw', 'sakila_staff') }} sstaff ON sstaff.staff_id = ss.manager_staff_id
+	FROM {{ source('sakila', 'store') }} ss
+	LEFT JOIN {{ source('sakila', 'address') }} sadd ON sadd.address_id = ss.address_id
+	LEFT JOIN {{ source('sakila', 'city') }} scity ON scity.city_id = sadd.city_id
+	LEFT JOIN {{ source('sakila', 'country') }} scou ON scou.country_id = scity.country_id
+	LEFT JOIN {{ source('sakila', 'staff') }} sstaff ON sstaff.staff_id = ss.manager_staff_id
 	),
 
 renamed

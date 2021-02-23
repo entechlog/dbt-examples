@@ -1,24 +1,17 @@
-default:
+sakila_db:
+  target: dev
   outputs:
-
     dev:
-      type: redshift
-      threads: [1 or more]
-      host: [host]
-      port: [port]
-      user: [dev_username]
-      pass: [dev_password]
-      dbname: [dbname]
-      schema: [dev_schema]
+      type: snowflake
+      account: <your-snowflake-account>
 
-    prod:
-      type: redshift
-      method: iam
-      cluster_id: [cluster_id]
-      threads: [1 or more]
-      host: [host]
-      port: [port]
-      user: [prod_user]
-      dbname: [dbname]
-      schema: [prod_schema]
+      # User/password auth
+      user: DBT_USER
+      password: dbtuser
 
+      role: DBT_ROLE
+      database: DBT_DEMO_SOURCES
+      warehouse: DBT_WH
+      schema: DBT
+      threads: 1
+      client_session_keep_alive: False

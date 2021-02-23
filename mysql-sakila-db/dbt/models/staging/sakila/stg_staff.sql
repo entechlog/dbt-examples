@@ -5,8 +5,8 @@ AS (
 		sstaff.last_name,
 		sstore.store_id,
 		sstaff.active
-	FROM {{ source('raw', 'sakila_staff') }} sstaff
-	LEFT JOIN {{ source('raw', 'sakila_store') }} sstore ON sstore.store_id = sstaff.store_id
+	FROM {{ source('sakila', 'staff') }} sstaff
+	LEFT JOIN {{ source('sakila', 'store') }} sstore ON sstore.store_id = sstaff.store_id
 	),
 
 renamed

@@ -2,12 +2,12 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'mysql_sakila_db'
+name: 'sakila_db'
 version: '1.0.0'
 config-version: 2
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'snowflake-db'
+profile: 'sakila_db'
 
 # These configurations specify where dbt should look for different types of files.
 # The `source-paths` config, for example, states that models in this project can be
@@ -34,18 +34,21 @@ clean-targets:         # directories to be removed by `dbt clean`
 # as tables. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 models:
-  mysql_sakila_db:
+  sakila_db:
       materialized: table
-      prep:
-        schema: prep
-        materialized: view
-      analytics:
-        schema: analytics
+      staging:
+        database: DBT_DEMO_STAGING
+        schema: SAKILA
         materialized: table
+      marts:
+        database: DBT_DEMO_MARTS
+        schema: CORE
+        materialized: view
 seeds:
-  mysql_sakila_db:
+  sakila_db:
+    database: DBT_DEMO_SOURCES
     schema: raw # all seeds in this project will use the mapping schema by default
-    raw:
-      schema: raw # seeds in the `data/raw/ subdirectory will use the raw schema
-    reference:
-      schema: reference # seeds in the `data/reference/ subdirectory will use the reference schema
+    sakila:
+      schema: SAKILA # seeds in the `data/sakila/ subdirectory will use the sakila schema
+    lookups:
+      schema: lookups # seeds in the `data/lookups/ subdirectory will use the lookups schema

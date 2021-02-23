@@ -13,11 +13,11 @@ AS (
 		sf.rating,
 		sf.special_features,
 		sc.name
-	FROM {{ source('raw', 'sakila_film') }} sf
-	LEFT JOIN {{ source('raw', 'sakila_film_category') }} sfc ON sfc.film_id = sf.film_id
-	LEFT JOIN {{ source('raw', 'sakila_category') }} sc ON sc.category_id = sfc.category_id
-	LEFT JOIN {{ source('raw', 'sakila_language') }} sl ON sl.language_id = sf.language_id
-	LEFT JOIN {{ source('raw', 'sakila_language') }} slo ON slo.language_id = sf.original_language_id
+	FROM {{ source('sakila', 'film') }} sf
+	LEFT JOIN {{ source('sakila', 'film_category') }} sfc ON sfc.film_id = sf.film_id
+	LEFT JOIN {{ source('sakila', 'category') }} sc ON sc.category_id = sfc.category_id
+	LEFT JOIN {{ source('sakila', 'language') }} sl ON sl.language_id = sf.language_id
+	LEFT JOIN {{ source('sakila', 'language') }} slo ON slo.language_id = sf.original_language_id
 	),
 
 renamed
