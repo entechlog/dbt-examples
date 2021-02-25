@@ -52,3 +52,15 @@ seeds:
       schema: SAKILA # seeds in the `data/sakila/ subdirectory will use the sakila schema
     lookups:
       schema: lookups # seeds in the `data/lookups/ subdirectory will use the lookups schema
+
+snapshots:
+  sakila_db:
+      marts:
+        target_database: DBT_DEMO_MARTS
+        target_schema: CORE
+        
+on-run-start:
+
+on-run-end:
+#    - "create table if not exists {{ target.schema }}.audit_dbt_results (node text, status text, execution_time decimal(10,2), time timestamp)"
+#    - "insert into {{ target.schema }}.audit_dbt_results (node, status, execution_time, time) values {{ results_values(results) }}"
