@@ -10,6 +10,6 @@
     )
 }}
 
-select * from {{ ref('dim_customer') }}
+select * from {{ ref('dim_customer_view') }}
 
 {% endsnapshot %}
