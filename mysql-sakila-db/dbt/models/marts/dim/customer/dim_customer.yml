@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: sakila
+    database: DBT_DEMO_STAGING
+    schema: SAKILA
+    tables:
+      - name: stg_customer
+        columns:
+          - name: ACTOR_ID
+            tests:
+              - dbt_expectations.expect_column_values_to_be_unique

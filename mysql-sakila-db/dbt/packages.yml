@@ -1,6 +1,11 @@
 packages:
   - package: fishtown-analytics/dbt_utils
     version: 0.6.4
-
   - package: calogica/dbt_expectations
     version: 0.2.2
+  - package: fishtown-analytics/codegen
+    version: 0.3.1
+  - package: yu-iskw/dbt_airflow_macros
+    version: 0.2.2
+  - package: Datavault-UK/dbtvault
+    version: 0.7.3
