@@ -20,8 +20,8 @@
 
     {%- set period_filter -%}
             (TO_DATE({{ timestamp_field }}) >= DATE_TRUNC('{{ period }}', TO_DATE('{{ start_timestamp }}') + INTERVAL '{{ offset }} {{ period }}') AND
-             TO_DATE({{ timestamp_field }}) < DATE_TRUNC('{{ period }}', TO_DATE('{{ start_timestamp }}') + INTERVAL '{{ offset }} {{ period }}' + INTERVAL '1 {{ period }}'))
-      AND (TO_DATE({{ timestamp_field }}) >= TO_DATE('{{ start_timestamp }}'))
+             TO_DATE({{ timestamp_field }}) <= DATE_TRUNC('{{ period }}', TO_DATE('{{ start_timestamp }}') + INTERVAL '{{ offset }} {{ period }}' + INTERVAL '1 {{ period }}'))
+      {#-- AND (TO_DATE({{ timestamp_field }}) > TO_DATE('{{ start_timestamp }}')) #}
     {%- endset -%}
 
     {%- set filtered_sql = core_sql | replace("__PERIOD_FILTER__", period_filter) -%}
@@ -79,7 +79,7 @@
     {% set period_boundary_sql -%}
         with data as (
             select
-                coalesce(max({{ timestamp_field }}), '{{ start_date }}')::timestamp as start_timestamp,
+                coalesce('{{ start_date }}', max({{ timestamp_field }}))::timestamp as start_timestamp,
                 coalesce({{ dbt_utils.dateadd('millisecond', 86399999, "nullif('" ~ stop_date | lower ~ "','none')::timestamp") }},
                          {{ dbt_utils.current_timestamp() }} ) as stop_timestamp
             from {{ target_database }}.{{ target_schema }}.{{ target_table }}
