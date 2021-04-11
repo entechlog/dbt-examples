@@ -1,4 +1,5 @@
-dbt==0.19.1rc1
+dbt==0.19.1
 tap-github
 target-csv
 jsonschema
+dag-factory==0.7.2
