@@ -21,6 +21,8 @@ services:
       - ./dbt:/data/dbt
     ports:
       - "8085:8080"
+    environment:
+      - TZ=Etc/GMT
 
   postgres:
     image: postgres${POSTGRES_VERSION_TAG}
