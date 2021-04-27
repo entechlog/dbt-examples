@@ -9,3 +9,6 @@ packages:
     version: 0.2.2
   - package: Datavault-UK/dbtvault
     version: 0.7.3
+#  - package: fishtown-analytics/logging
+#    version: 0.4.2
+    

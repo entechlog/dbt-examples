@@ -27,6 +27,10 @@ clean-targets:         # directories to be removed by `dbt clean`
     - "dbt_modules"
     - "logs"
 
+vars:
+  logging_db: 'DBT_DEMO_STAGING'
+  logging_schema: 'utils'
+
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
@@ -34,6 +38,11 @@ clean-targets:         # directories to be removed by `dbt clean`
 # as tables. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 models:
+  pre-hook: 
+    - "{{ log_model_start_event() }}"
+  post-hook: 
+    - "{{ log_model_end_event() }}"
+
   sakila_db:
       materialized: table
       staging:
@@ -64,7 +73,12 @@ snapshots:
         target_schema: CORE
         
 on-run-start:
+  - "{{ create_audit_schema() }}"
+  - "{{ create_audit_log_table() }}"
+  - "{{ log_run_start_event() }}"
 
 on-run-end:
+    - "{{ log_run_end_event() }}"
+
 #    - "create table if not exists {{ target.schema }}.audit_dbt_results (node text, status text, execution_time decimal(10,2), time timestamp)"
 #    - "insert into {{ target.schema }}.audit_dbt_results (node, status, execution_time, time) values {{ results_values(results) }}"
