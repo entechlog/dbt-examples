@@ -64,6 +64,7 @@ models:
         materialized: table
 
   dbt_artifacts:
+    database: DBT_DEMO_STAGING
     +schema: UTILS
     staging:
       +schema: STAGE
