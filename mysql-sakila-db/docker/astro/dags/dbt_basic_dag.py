@@ -6,6 +6,7 @@ from airflow.utils.dates import datetime
 from airflow.utils.dates import timedelta
 
 from S3UploadOperator import S3UploadOperator
+from UploadDbtStateToS3Operator import UploadDbtStateToS3Operator
 from airflow.models import Variable
 
 # These args will get passed on to each operator
@@ -47,4 +48,12 @@ dbt_state_upload = S3UploadOperator(
     dag=dag
     )
 
-dbt_debug >> dbt_compile >> dbt_state_upload
+dbt_state_upload_dir = UploadDbtStateToS3Operator(
+    task_id='dbt_state_upload_dir',
+    aws_conn_id='aws_credentials',
+    bucket_name=Variable.get('S3_BUCKET_NAME'),
+    files_path=Variable.get('LOCAL_FILES_PATH') + 'target',
+    dag=dag
+    )
+    
+dbt_debug >> dbt_compile >> dbt_state_upload >> dbt_state_upload_dir
