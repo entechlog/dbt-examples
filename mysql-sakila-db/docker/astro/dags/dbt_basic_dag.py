@@ -11,7 +11,6 @@ default_args = {
     'owner': 'astronomer',
     'depends_on_past': False,
     'start_date': datetime(2020, 12, 23),
-    'email': ['noreply@astronomer.io'],
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 1,
@@ -19,21 +18,30 @@ default_args = {
 }
 dag = DAG(
     'dbt_basic_dag',
+    max_active_runs=1,
     default_args=default_args,
-    description='An Airflow DAG to invoke D',
+    description='An Airflow DAG to invoke DBT',
     schedule_interval=timedelta(days=1),
 )
 
-dbt_run = BashOperator(
-    task_id='dbt_run',
-    bash_command='dbt run',
+dbt_debug = BashOperator(
+    task_id='dbt_debug',
+    bash_command='ls -ltra && cd /usr/local/airflow/dbt/ && dbt debug',
     dag=dag
 )
 
-dbt_test = BashOperator(
-    task_id='dbt_test',
-    bash_command='dbt test',
+dbt_compile = BashOperator(
+    task_id='dbt_compile',
+    bash_command='cd /usr/local/airflow/dbt/ && dbt compile',
     dag=dag
 )
 
-dbt_run >> dbt_test
+dbt_state_upload = S3UploadOperator(
+    task_id='dbt_state_upload',
+    aws_credentials_id='aws_credentials',
+    dest_bucket_name=Variable.get('S3_RAW_QUOTES_BUCKET_NAME'),
+    files_path=Variable.get('LOCAL_FILES_PATH') + '/target',
+    dag=dag
+    )
+
+dbt_debug >> dbt_compile >> dbt_state_upload

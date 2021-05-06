@@ -1,0 +1,17 @@
+version: "2"
+services:
+  scheduler:
+    volumes:
+      - C:\Users\nadesansiva\VisualStudioCode\dbt-examples\mysql-sakila-db\dbt:/usr/local/airflow/dbt:rw
+    environment:
+        # dbt parameters
+        - DBT_PROFILES_DIR=/usr/local/airflow/dbt/
+        - DBT_ARTIFACT_STATE_PATH=/usr/local/airflow/dbt/target/
+  webserver:
+    volumes:
+      - C:\Users\nadesansiva\VisualStudioCode\dbt-examples\mysql-sakila-db\dbt:/usr/local/airflow/dbt:rw
+    environment:
+        # dbt parameters
+        - DBT_PROFILES_DIR=/usr/local/airflow/dbt/
+        - DBT_ARTIFACT_STATE_PATH=/usr/local/airflow/dbt/target/
+        

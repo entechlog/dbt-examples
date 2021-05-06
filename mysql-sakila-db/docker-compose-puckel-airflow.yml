@@ -29,6 +29,7 @@ services:
               max-file: "3"
       volumes:
         - ./dags:/usr/local/airflow/dags
+        - ./dbt:/usr/local/airflow/dbt
         - ./docker/airflow/requirements.txt:/requirements.txt
         - //var/run/docker.sock:/var/run/docker.sock:rw
       ports:
