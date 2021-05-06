@@ -41,9 +41,9 @@ dbt_compile = BashOperator(
 
 dbt_state_upload = S3UploadOperator(
     task_id='dbt_state_upload',
-    aws_credentials_id='aws_credentials',
+    aws_conn_id='aws_credentials',
     dest_bucket_name=Variable.get('S3_BUCKET_NAME'),
-    files_path=Variable.get('LOCAL_FILES_PATH') + '/target',
+    files_path=Variable.get('LOCAL_FILES_PATH') + 'target',
     dag=dag
     )
 

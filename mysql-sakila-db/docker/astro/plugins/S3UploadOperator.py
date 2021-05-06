@@ -37,7 +37,8 @@ class S3UploadOperator(BaseOperator):
             self.log.info(f'uploaded file in {self.singlefile_path}...')
             return
         self.log.info(f'start to upload files to {self.dest_bucket_name}...')
-        s_local_filespath = f"{self.files_path}/{context['ds_nodash']}*.csv"
+        s_local_filespath = f"{self.files_path}/{context['ds_nodash']}*.json"
+        s_local_filespath = f"{self.files_path}/*.json"
         self.log.info(f's_local_filespath {s_local_filespath} ...')
         ii = 0
         for ii, s_filepath in enumerate(glob.glob(s_local_filespath)):
