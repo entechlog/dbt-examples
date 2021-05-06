@@ -6,6 +6,7 @@ from airflow.utils.dates import datetime
 from airflow.utils.dates import timedelta
 
 from S3UploadOperator import S3UploadOperator
+from airflow.models import Variable
 
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
@@ -41,7 +42,7 @@ dbt_compile = BashOperator(
 dbt_state_upload = S3UploadOperator(
     task_id='dbt_state_upload',
     aws_credentials_id='aws_credentials',
-    dest_bucket_name=Variable.get('S3_RAW_QUOTES_BUCKET_NAME'),
+    dest_bucket_name=Variable.get('S3_BUCKET_NAME'),
     files_path=Variable.get('LOCAL_FILES_PATH') + '/target',
     dag=dag
     )
