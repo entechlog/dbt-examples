@@ -5,6 +5,8 @@ from airflow.operators.bash_operator import BashOperator
 from airflow.utils.dates import datetime
 from airflow.utils.dates import timedelta
 
+from S3UploadOperator import S3UploadOperator
+
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
 default_args = {
