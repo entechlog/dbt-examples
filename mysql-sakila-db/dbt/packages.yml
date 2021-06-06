@@ -11,5 +11,7 @@ packages:
     version: 0.7.3
 #  - package: fishtown-analytics/logging
 #    version: 0.4.2
-  - package: tailsdotcom/dbt_artifacts
-    version: 0.4.3
+#  - package: tailsdotcom/dbt_artifacts
+#    version: 0.4.3
+  - git: "https://github.com/entechlog/dbt-snow-mask.git"
+    revision: 0.1.1

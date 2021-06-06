@@ -15,6 +15,9 @@ models:
           - not_null
       - name: customer_last_name
       - name: customer_email
+        meta:
+          masking_policy: temp
+
       - name: customer_active
       - name: customer_created
       - name: customer_address

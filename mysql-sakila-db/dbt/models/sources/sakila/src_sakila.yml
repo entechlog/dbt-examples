@@ -8,6 +8,10 @@ sources:
           - name: ACTOR_ID
             tests:
               - dbt_expectations.expect_column_values_to_be_unique
+          - name: FIRST_NAME
+            meta:
+                masking_policy: temp
+                          
       - name: address
       - name: category
       - name: city
