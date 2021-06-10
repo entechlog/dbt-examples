@@ -17,10 +17,9 @@ services:
         sleep infinity
     restart: unless-stopped
     volumes:
-      - type: bind
-        source: /C
-        target: /c
+      - ./.dbt/profiles.yml:/secure/profile/profiles.yml
+      - ./dbt:/data/dbt
     ports:
-      - "8085:8085"
+      - "8085:8080"
     environment:
       - TZ=Etc/GMT

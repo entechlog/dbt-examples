@@ -1,0 +1,17 @@
+sakila_db:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: <your-snowflake-account>
+
+      # User/password auth
+      user: DBT_USER
+      password: dbtuser
+
+      role: DBT_ROLE
+      database: DBT_DEMO_SOURCES
+      warehouse: DBT_WH
+      schema: DBT
+      threads: 1
+      client_session_keep_alive: False
