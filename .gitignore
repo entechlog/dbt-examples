@@ -138,3 +138,6 @@ profiles.yml
 *.pem
 *.pub
 *my_password.txt
+
+#Postgres
+.user.yml
