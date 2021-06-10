@@ -2,7 +2,7 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'dbt_postgres'
+name: 'dbt_postgres_demo'
 version: '1.0.0'
 config-version: 2
 
@@ -32,7 +32,13 @@ clean-targets:         # directories to be removed by `dbt clean`
 # as tables. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 models:
-  dbt_postgres:
+  dbt_postgres_demo:
       # Applies to all files under models/example/
       example:
           materialized: view
+
+seeds:
+  dbt_postgres_demo:
+    schema: raw # all seeds in this project will use the mapping schema by default
+    imdb:
+      schema: imdb # seeds in the `data/imdb/ subdirectory will use the imdb schema
