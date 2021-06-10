@@ -1,0 +1,44 @@
+dbt-postgres:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: [hostname]
+      user: [username]
+      password: [password]
+      port: [port]
+      dbname: [database name]
+      schema: [dbt schema]
+      threads: [1 or more]
+      keepalives_idle: 0 # default 0, indicating the system default
+      search_path: [optional, override the default postgres search_path]
+      role: [optional, set the role dbt assumes when executing queries]
+      sslmode: [optional, set the sslmode used to connect to the database]
+
+    cicd:
+      type: postgres
+      host: [hostname]
+      user: [username]
+      password: [password]
+      port: [port]
+      dbname: [database name]
+      schema: [dbt schema]
+      threads: [1 or more]
+      keepalives_idle: 0 # default 0, indicating the system default
+      search_path: [optional, override the default postgres search_path]
+      role: [optional, set the role dbt assumes when executing queries]
+      sslmode: [optional, set the sslmode used to connect to the database]
+
+    prod:
+      type: postgres
+      host: [hostname]
+      user: [username]
+      password: [password]
+      port: [port]
+      dbname: [database name]
+      schema: [dbt schema]
+      threads: [1 or more]
+      keepalives_idle: 0 # default 0, indicating the system default
+      search_path: [optional, override the default postgres search_path]
+      role: [optional, set the role dbt assumes when executing queries]
+      sslmode: [optional, set the sslmode used to connect to the database]
