@@ -1,4 +1,4 @@
-sakila_db:
+dbt-snowflake:
   target: dev
   outputs:
     dev:
