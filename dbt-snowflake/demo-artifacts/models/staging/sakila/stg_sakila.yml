@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: stg_customer
+    description: This table contains information about customers who rented the movie 
+    columns:
+      - name: customer_id
+        description: This is a unique identifier for customer
+        tests:
+          - unique
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_unique
+      - name: customer_first_name
+        tests:
+          - not_null
+      - name: customer_last_name
+      - name: customer_email
+        meta:
+          masking_policy: temp
+
+      - name: customer_active
+      - name: customer_created
+      - name: customer_address
+      - name: customer_district
+      - name: customer_postal_code
+      - name: customer_phone_number
+      - name: customer_city
+      - name: customer_country
+      - name: last_update
+
+  - name: stg_film
+    description: '{{ doc("film_overview") }}' 

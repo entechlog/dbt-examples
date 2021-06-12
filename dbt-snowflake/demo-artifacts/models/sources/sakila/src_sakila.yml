@@ -1,0 +1,30 @@
+version: 2
+
+sources:
+  - name: sakila
+    tables:
+      - name: actor
+        columns:
+          - name: ACTOR_ID
+            tests:
+              - dbt_expectations.expect_column_values_to_be_unique
+          - name: FIRST_NAME
+            meta:
+                masking_policy: temp
+                          
+      - name: address
+      - name: category
+      - name: city
+      - name: country
+      - name: customer
+      - name: film
+      - name: film_actor
+      - name: film_category
+      - name: film_text
+      - name: inventory
+      - name: language
+      - name: payment
+      - name: rental
+      - name: staff
+      - name: store
+      

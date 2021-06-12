@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: dim_customer_view
+  - name: dim_customer_table
     columns:
       - name: ACTOR_ID
         tests:

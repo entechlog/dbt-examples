@@ -3,8 +3,8 @@
     materialized = "vault_insert_by_period",
     period = "year",
     timestamp_field = "last_update",
-    start_date = "2021-01-01",
-    stop_date = "2021-07-01", 
+    start_date = "2006-01-01",
+    stop_date = "2021-01-01", 
   )
 }}
 
@@ -14,8 +14,7 @@ AS (
 		CUSTOMER_FIRST_NAME,
 		CUSTOMER_LAST_NAME,
 		CUSTOMER_EMAIL,
-		LAST_UPDATE,
-		CUSTOMER_DISTRICT
+		LAST_UPDATE
 	FROM {{ ref('stg_customer') }}
 	WHERE __PERIOD_FILTER__
 	)

@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: INFORMATION_SCHEMA # required
+    description: Snowflake information schema
+    database: DBT_DEMO_STAGING
+    schema: INFORMATION_SCHEMA
+    tables:
+      - name: TABLES
