@@ -2,12 +2,12 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'sakila_db'
+name: 'dbt_snowflake_demo'
 version: '1.0.0'
 config-version: 2
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'sakila_db'
+profile: 'dbt-snowflake'
 
 # These configurations specify where dbt should look for different types of files.
 # The `source-paths` config, for example, states that models in this project can be
@@ -47,9 +47,9 @@ models:
   #  - "{{ log_model_start_event() }}"
   post-hook: 
   #  - "{{ log_model_end_event() }}"
-    - "{{ dbt_snow_mask.apply_masking_policy() }}"
+  #  - "{{ dbt_snow_mask.apply_masking_policy() }}"
 
-  sakila_db:
+  dbt_snowflake_demo:
       materialized: table
       staging:
         database: DBT_DEMO_STAGING
@@ -71,7 +71,7 @@ models:
       +schema: STAGE
 
 seeds:
-  sakila_db:
+  dbt_snowflake_demo:
     database: DBT_DEMO_SOURCES
     schema: raw # all seeds in this project will use the mapping schema by default
     sakila:
@@ -80,7 +80,7 @@ seeds:
       schema: lookups # seeds in the `data/lookups/ subdirectory will use the lookups schema
 
 snapshots:
-  sakila_db:
+  dbt_snowflake_demo:
       marts:
         target_database: DBT_DEMO_MARTS
         target_schema: CORE

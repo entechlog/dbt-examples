@@ -19,7 +19,7 @@ services:
     volumes:
       - type: bind
         source: /C
-        target: /c
+        target: /C
     ports:
       - "8085:8085"
     environment:
