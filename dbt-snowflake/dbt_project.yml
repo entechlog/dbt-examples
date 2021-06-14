@@ -47,7 +47,7 @@ models:
   #  - "{{ log_model_start_event() }}"
   post-hook: 
   #  - "{{ log_model_end_event() }}"
-  #  - "{{ dbt_snow_mask.apply_masking_policy() }}"
+    - "{{ dbt_snow_mask.apply_masking_policy() }}"
 
   dbt_snowflake_demo:
       materialized: table
