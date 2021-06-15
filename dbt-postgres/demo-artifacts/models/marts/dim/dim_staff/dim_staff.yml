@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: dim_staff    
+    description: ""    
+    columns:
+      - name: staff_id 
+        description: ""
+        tests:
+          - unique
+          - not_null
+          
+      - name: staff_key
+        description: ""
+
+      - name: staff_first_name
+        description: ""
+
+      - name: staff_last_name
+        description: ""
+
+      - name: staff_store_id
+        description: ""
+
+      - name: staff_active
+        description: ""
+
+      - name: seq
+        description: ""

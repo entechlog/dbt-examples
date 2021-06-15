@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: fct_sales
+    description: ""
+    columns:
+      - name: date_id
+        description: ""
+        tests:
+          - relationships:
+              to: ref('dim_date')
+              field: date_dim_id
+
+      - name: customer_id
+        description: ""
+
+      - name: film_id
+        description: ""
+
+      - name: store_id
+        description: ""
+
+      - name: staff_id
+        description: ""
+
+      - name: amount
+        description: ""

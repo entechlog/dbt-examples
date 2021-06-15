@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: dim_film
+    description: ""
+    columns:
+      - name: film_id
+        description: ""
+        tests:
+          - unique
+          - not_null
+          
+      - name: film_key
+        description: ""
+
+      - name: film_title
+        description: ""
+
+      - name: film_description
+        description: ""
+
+      - name: film_release_year
+        description: ""
+
+      - name: film_language
+        description: ""
+
+      - name: film_original_language
+        description: ""
+
+      - name: film_rental_duration
+        description: ""
+
+      - name: film_rental_rate
+        description: ""
+
+      - name: film_duration
+        description: ""
+
+      - name: film_replacement_cost
+        description: ""
+
+      - name: film_rating
+        description: ""
+
+      - name: film_special_features
+        description: ""
+
+      - name: film_category_name
+        description: ""
+
+      - name: seq
+        description: ""

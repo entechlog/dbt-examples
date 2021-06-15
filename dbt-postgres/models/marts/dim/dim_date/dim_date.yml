@@ -1,0 +1,95 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: ""
+    columns:
+      - name: date_dim_id
+        description: ""
+        tests:
+          - unique
+          - not_null
+          
+      - name: date_actual
+        description: ""
+
+      - name: epoch
+        description: ""
+
+      - name: day_suffix
+        description: ""
+
+      - name: day_name
+        description: ""
+
+      - name: day_of_week
+        description: ""
+
+      - name: day_of_month
+        description: ""
+
+      - name: day_of_quarter
+        description: ""
+
+      - name: day_of_year
+        description: ""
+
+      - name: week_of_month
+        description: ""
+
+      - name: week_of_year
+        description: ""
+
+      - name: week_of_year_iso
+        description: ""
+
+      - name: month_actual
+        description: ""
+
+      - name: month_name
+        description: ""
+
+      - name: month_name_abbreviated
+        description: ""
+
+      - name: quarter_actual
+        description: ""
+
+      - name: quarter_name
+        description: ""
+
+      - name: year_actual
+        description: ""
+
+      - name: first_day_of_week
+        description: ""
+
+      - name: last_day_of_week
+        description: ""
+
+      - name: first_day_of_month
+        description: ""
+
+      - name: last_day_of_month
+        description: ""
+
+      - name: first_day_of_quarter
+        description: ""
+
+      - name: last_day_of_quarter
+        description: ""
+
+      - name: first_day_of_year
+        description: ""
+
+      - name: last_day_of_year
+        description: ""
+
+      - name: mmyyyy
+        description: ""
+
+      - name: mmddyyyy
+        description: ""
+
+      - name: weekend_indr
+        description: ""

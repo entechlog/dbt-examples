@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: imdb
+    tables:
+      - name: actors                          
+      - name: directors_genres
+      - name: directors
+      - name: movies_directors
+      - name: movies_genres
+      - name: movies
+      - name: roles
+
+      

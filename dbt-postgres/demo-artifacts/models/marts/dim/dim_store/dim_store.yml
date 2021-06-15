@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: dim_store
+    description: ""
+    columns:
+      - name: store_id
+        description: ""
+        tests:
+          - unique
+          - not_null
+          
+      - name: store_key
+        description: ""
+
+      - name: store_address
+        description: ""
+
+      - name: store_district
+        description: ""
+
+      - name: store_postal_code
+        description: ""
+
+      - name: store_phone_number
+        description: ""
+
+      - name: store_city
+        description: ""
+
+      - name: store_country
+        description: ""
+
+      - name: store_manager_staff_key
+        description: ""
+
+      - name: store_manager_first_name
+        description: ""
+
+      - name: store_manager_last_name
+        description: ""
+
+      - name: seq
+        description: ""

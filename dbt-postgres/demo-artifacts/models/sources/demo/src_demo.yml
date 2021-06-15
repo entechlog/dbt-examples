@@ -1,0 +1,6 @@
+version: 2
+
+sources:
+  - name: demo
+    tables:
+      - name: d_date
