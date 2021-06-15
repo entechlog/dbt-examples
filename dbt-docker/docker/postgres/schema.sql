@@ -1,2 +1,1 @@
-
 create schema demo;

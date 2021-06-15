@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: lookups
+    tables:
+      - name: country_code
+        columns:
+          - name: name
+            tests:
+              - unique
+              - not_null
+          - name: code
+            tests:
+              - unique
+              - not_null

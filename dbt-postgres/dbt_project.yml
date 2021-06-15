@@ -18,12 +18,17 @@ test-paths: ["tests"]
 data-paths: ["data"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
+docs-paths: ["docs"]
+asset-paths: ["assets"]
 
 target-path: "target"  # directory which will store compiled SQL files
 clean-targets:         # directories to be removed by `dbt clean`
     - "target"
     - "dbt_modules"
+    - "logs"
 
+vars:
+  start_date: '2005-01-01'
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -33,12 +38,30 @@ clean-targets:         # directories to be removed by `dbt clean`
 # using the `{{ config(...) }}` macro.
 models:
   dbt_postgres_demo:
-      # Applies to all files under models/example/
-      example:
-          materialized: view
+      materialized: table
+      staging:
+        schema: staging
+        materialized: view
+      marts:
+        dim:
+          schema: dim
+          materialized: table
+        fact:
+          schema: fact
+          materialized: table
+      presentation:
+        schema: analytics
+        materialized: view
 
 seeds:
   dbt_postgres_demo:
     schema: raw # all seeds in this project will use the mapping schema by default
     imdb:
       schema: imdb # seeds in the `data/imdb/ subdirectory will use the imdb schema
+    sakila:
+      schema: sakila # seeds in the `data/sakila/ subdirectory will use the sakila schema
+      address:
+        +column_types:
+          phone: varchar(50)
+    lookups:
+      schema: lookups # seeds in the `data/lookups/ subdirectory will use the lookups schema

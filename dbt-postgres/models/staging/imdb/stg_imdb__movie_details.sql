@@ -1,4 +1,4 @@
-{{ config(materialized='view') }}
+{{ config(alias = 'movie_details', materialized='view') }}
 
 SELECT mov.name
 	,act.first_name

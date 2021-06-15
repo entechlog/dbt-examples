@@ -1,3 +1,5 @@
+SET search_path TO demo;
+
 CREATE TABLE users(
     id BIGINT GENERATED ALWAYS AS IDENTITY,
     PRIMARY KEY(id),
