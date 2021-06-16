@@ -10,6 +10,9 @@ WITH source
 AS (
 	SELECT *
 	FROM {{ ref('stg_sakila__sales') }}
+	{% if is_incremental() %}
+		WHERE DATE(payment_date) = {{ "'" ~ var('start_date') ~ "'" }}
+	{% endif %}
 	),
 
 relations
