@@ -1,4 +1,7 @@
 - [Overview](#overview)
+  - [Process flow](#process-flow)
+  - [Source model](#source-model)
+  - [DW model](#dw-model)
 - [Demo](#demo)
   - [Start docker containers](#start-docker-containers)
   - [Create dbt project and configure profile](#create-dbt-project-and-configure-profile)
@@ -9,16 +12,28 @@
   - [Packages](#packages)
   - [Models](#models)
   - [Tests](#tests)
+  - [Validation SQL's](#validation-sqls)
   - [Docs](#docs)
 - [Clean the demo resources](#clean-the-demo-resources)
 - [References](#references)
 - [Resources:](#resources)
 
 # Overview
-Welcome to your dbt demo workshop. In this demo we will try to cover the basics for dbt and will create an data pipeline to load dims and facts using dbt.
+Welcome to your dbt demo workshop. In this demo we will try to cover the basics for dbt and will create an data pipeline to load dims and facts using dbt and DVD rental store data.
 
+## Process flow
 <p align="center">
   <img src="./assets/dbt-postgress-dw-overview.png" alt="Overview" width="738">
+</p>
+
+## Source model
+<p align="center">
+  <img src="./assets/model-oltp.png" alt="OLTP Model" width="738">
+</p>
+
+## DW model
+<p align="center">
+  <img src="./assets/model-dw.png" alt="DW Model" width="738">
 </p>
 
 We will use the following 
@@ -208,11 +223,28 @@ We will use the following
 
 - Demo the models and [Materializations Type](https://docs.getdbt.com/docs/building-a-dbt-project/building-models/materializations)
 
+  ```jinja
+    {% if is_incremental() %}
+		  WHERE DATE(payment_date) > (select max(date_id)::text::date from {{ this }})
+	  {% endif %}
+
+    {% if is_incremental() %}
+		  WHERE DATE(payment_date) = {{ "'" ~ var('start_date') ~ "'" }}
+	  {% endif %}
+
+  	{% if is_incremental() %}
+		  WHERE DATE(payment_date) = {{ "'" ~ var('start_date') ~ "'" }}
+	  {% else %}
+		  WHERE DATE(payment_date) = {{ "'" ~ var('high_date') ~ "'" }}
+	  {% endif %}
+  ```
+  
 - Build models by running below command
   
   ```bash
   dbt run --models stg_sakila__customer
   dbt run --models staging.*
+  dbt run --models +fct_sales --var '{"start_date": "2005-05-24"}'
   dbt run --models +tag:presentation-dim
   dbt run --models +tag:presentation-fact --var '{"start_date": "2005-05-24"}'
   dbt run
@@ -237,6 +269,33 @@ Types of tests:
   dbt test --models +tag:presentation-dim
   dbt test --models +tag:presentation-fact
   ```
+
+## Validation SQL's
+
+```sql
+-- Incremental demo
+SELECT cast(date_id AS VARCHAR) as date_id
+	,count(1) as rec_count
+FROM analytics.sales
+GROUP BY date_id
+ORDER BY date_id;
+
+-- Revenue by day
+SELECT ad.day_name
+	,af.film_rating
+	,ac.customer_city
+	,sum(amount) AS revenue
+FROM analytics.sales asa
+JOIN analytics.film af ON (af.film_id = asa.film_id)
+JOIN analytics.DATE ad ON (ad.date_dim_id = asa.date_id)
+JOIN analytics.customer ac ON (ac.customer_id = asa.customer_id)
+GROUP BY (
+		ad.day_name
+		,af.film_rating
+		,ac.customer_city
+		)
+ORDER BY revenue DESC limit 100;
+```
 
 ## Docs
 [dbt docs](https://docs.getdbt.com/docs/building-a-dbt-project/documentation) provides a way to generate documentation for your dbt project and render it as a website. 
