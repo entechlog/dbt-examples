@@ -2,6 +2,8 @@
 - [Demo](#demo)
   - [Start docker containers](#start-docker-containers)
   - [Create dbt project and configure profile](#create-dbt-project-and-configure-profile)
+  - [Configure dbt project](#configure-dbt-project)
+  - [Seeds](#seeds)
   - [Macros](#macros)
   - [Sources](#sources)
   - [Packages](#packages)
@@ -31,77 +33,101 @@ We will use the following
 # Demo
 ## Start docker containers
 
-- Clone this repo and navigate to `dbt-docker` directory. This directory contains infra components for this demo
+> **🛑 Please stop any existing containers before proceeding to next steps 🛑**
 
+- Clone this repo
+
+- Open an new terminal and cd into `dbt-docker` directory. This directory contains infra components for this demo
+
+- Create a copy of [`.env.template`](./dbt-docker/../../dbt-docker/.env.template) as `.env`
+  
 - Start dbt container by running
-  ```
+  
+  ```bash
   docker-compose up -d --build
   ```
 
-- Start postgres container by running
-  ```
+- Start Postgres container by running
+
+  ```bash
   docker-compose -f docker-compose-postgres.yml up -d --build
   ```
 
 - Validate the container by running
-  ```
+
+  ```bash
   docker ps
   ```
 
+- Navigate to [pgAdmin](http://localhost:5050/) in your browser and login with `admin@admin.com` and `postgres`
+
+- Click on Add New Server and give following details
+  - Name      : dbt demo
+  - Host Name : postgres
+  - User      : postgres
+  - Password  : postgres
+
+> ⚠️ If you change the credentials in `.env` the please make to use them ⚠️
+  
 ## Create dbt project and configure profile
 
 - SSH into the dbt container by running
-  ```
+
+  ```bash
   docker exec -it dbt /bin/bash
   ```
 
 - Validate dbt by running
-  ```
+  
+  ```bash
   dbt --version
   ```
 
 - cd into your preferred directory
-  ```
+  
+  ```bash
   cd /C/
   ```
 
 - Create dbt project by running
-  ```
+  
+  ```bash
   dbt init dbt-postgres
   ```
 
-  > - Just for the ease of this demo, copy the contents from `dbt-postgres` directory of this repo into the newly created `dbt-postgres` directory.
+  > - ⚠️ For the ease of this demo, copy the contents from `dbt-postgres` directory of this repo into the newly created `dbt-postgres` directory.
   > 
-  > - Delete the contents from `macros`, `models` and `snapshots` directories to follow along this demo
+  > - ⚠️ Delete the contents from `macros`, `models` and `snapshots` directories to follow along this demo
 
-- Inside `dbt-postgres` directory, create a new dbt profile file `profiles.yml` and update it with postgres database connection details
+- Inside `dbt-postgres` directory, create a new dbt profile file `profiles.yml` and update it with Postgres database connection details
 
   ```yaml
   dbt-postgres:
-  target: dev
-  outputs:
-    dev:
-      type: postgres
-      host: postgres
-      user: postgres
-      password: postgres
-      port: 5432
-      dbname: postgres
-      schema: dbt
-      threads: 3
-      keepalives_idle: 0 # default 0, indicating the system default
-    ```
+    target: dev
+    outputs:
+      dev:
+        type: postgres
+        host: postgres
+        user: postgres
+        password: postgres
+        port: 5432
+        dbname: postgres
+        schema: demo
+        threads: 3
+        keepalives_idle: 0 # default 0, indicating the system default
+  ```
 
 ## Configure dbt project
 
 - Edit the `dbt_project.yml` to connect to the profile which we just created. The value for profile should exactly match with the name in `profiles.yml`
 
-- Run `dbt-set-profile` to update DBT_PROFILES_DIR.
+- From the project directory, run `dbt-set-profile` to update DBT_PROFILES_DIR.
 
   > dbt-set-profile is alias to `unset DBT_PROFILES_DIR && export DBT_PROFILES_DIR=$PWD`
 
 - Validate the dbt profile and connection by running
-  ```
+  
+  ```bash
   dbt debug
   ```
 
@@ -115,7 +141,7 @@ We will use the following
   ```bash
   dbt seed
   ```
-
+ 
 - Data will be loaded into a schema with `dbt_` prefix, to fix this we will create a small macro
 
 ## Macros
@@ -130,9 +156,14 @@ We will use the following
   ```bash
   dbt seed
   ```
+
   > This time data will be loaded into the correct schema without the `dbt_` prefix
 
-- Seed select files by running `dbt seed --select address`
+- Seed select files by running 
+  
+  ```bash
+  dbt seed --select address
+  ```
 
 ## Sources
 [Sources](https://docs.getdbt.com/docs/building-a-dbt-project/using-sources) make it possible to name and describe the data loaded into your warehouse by your Extract and Load tools.
@@ -150,7 +181,7 @@ We will use the following
 ## Packages
 [dbt packages](https://docs.getdbt.com/docs/building-a-dbt-project/package-management) are in fact standalone dbt projects, with models and macros that tackle a specific problem area.
 
-- Add a packages.yml file to your dbt project. This should be at the same level as your dbt_project.yml file
+- Review the package configuration in [packages.yml](packages.yml)
   
 - Specify the package(s) you wish to add
   
@@ -158,7 +189,9 @@ We will use the following
   packages:
     - package: fishtown-analytics/dbt_utils
       version: 0.6.6
-  ```  
+    - package: fishtown-analytics/codegen
+      version: 0.3.2
+  ```
 
 - Install the packages by running
   
@@ -171,13 +204,18 @@ We will use the following
 
 - Review the model configuration in [dbt_project.yml](dbt_project.yml)
  
+- Copy the model definition from `dbt-postgres\demo-artifacts\models\` to `dbt-postgres\models\`
+
+- Demo the models and [Materializations Type](https://docs.getdbt.com/docs/building-a-dbt-project/building-models/materializations)
+
 - Build models by running below command
   
   ```bash
-  dbt run
+  dbt run --models stg_sakila__customer
   dbt run --models staging.*
   dbt run --models +tag:presentation-dim
   dbt run --models +tag:presentation-fact --var '{"start_date": "2005-05-24"}'
+  dbt run
   ```
 
 ## Tests
@@ -219,16 +257,18 @@ Types of tests:
   dbt docs serve --port 8085
   ```
 
+- Stop published docs by running `ctrl + c`
+  
 # Clean the demo resources
-Run below command to delete the docker containers and related volumes
+Open an new terminal and cd into `dbt-docker` directory. Run below command to delete the docker containers and related volumes
 
 ```bash
 docker-compose down --volume --remove-orphans
 ```
 
 # References
-- [dbt blog](https://docs.getdbt.com/docs/introduction)
-- [Entechlog blog](https://www.entechlog.com/blog/data/exploring-dbt-with-snowflake)
+- [dbt Blog](https://docs.getdbt.com/docs/introduction)
+- [Entechlog Blog](https://www.entechlog.com/blog/data/exploring-dbt-with-snowflake)
 
 # Resources:
 - Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
