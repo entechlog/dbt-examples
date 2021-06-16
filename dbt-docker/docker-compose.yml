@@ -6,8 +6,8 @@ services:
     image: entechlog/dbt${DBT_VERSION_TAG}
     container_name: dbt
     build: ./docker/dbt/
-    env_file:
-      - ./docker/dbt/.env
+#    env_file:
+#      - ./docker/dbt/.env
     command: 
       - bash 
       - -c 
