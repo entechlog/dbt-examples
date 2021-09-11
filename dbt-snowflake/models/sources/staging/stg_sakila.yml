@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: stg_sakila
+    database: DBT_DEMO_STAGING
+    schema: SAKILA
+    tables:
+      - name: stg_customer
+        columns:
+          - name: CUSTOMER_EMAIL
+            meta:
+                masking_policy: temp
