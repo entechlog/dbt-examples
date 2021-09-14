@@ -1,8 +1,7 @@
 version: 2
 
 sources:
-  - name: sakila
-    description: '{{ doc("sakila_db_overview") }}' 
+  - name: sakila 
     tables:
       - name: actor
       - name: address
