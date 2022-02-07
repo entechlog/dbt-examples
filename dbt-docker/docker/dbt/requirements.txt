@@ -1,1 +1,6 @@
-dbt==0.19.1
+dbt-core==1.0.1
+dbt-postgres==1.0.1
+dbt-redshift==1.0.0
+dbt-snowflake==1.0.0
+dbt-bigquery==1.0.0
+dbt-materialize==1.0.1

@@ -3,6 +3,7 @@
 ## Demo
 - [dbt Snowflake](https://www.entechlog.com/blog/data/exploring-dbt-with-snowflake/)
 - [dbt Postgres](https://www.entechlog.com/blog/data/how-to-configure-dbt-for-postgres/)
+- [dbt Materialize](https://www.entechlog.com/blog/data/how-to-setup-dbt-for-materialize-db)
 
 ## Time sync issue fix
 

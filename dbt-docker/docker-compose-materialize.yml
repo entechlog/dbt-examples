@@ -1,0 +1,195 @@
+---
+version: "3"
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper${CONFLUENT_VERSION_TAG}
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-enterprise-kafka${CONFLUENT_VERSION_TAG}
+    hostname: broker
+    container_name: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,IP_LISTENER:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_HOST://localhost:29092,IP_LISTENER://192.168.1.78:39092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_TOPIC_REPLICATION_FACTOR: 1
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry${CONFLUENT_VERSION_TAG}
+    ports:
+      - 8081:8081
+    container_name: schema-registry
+    depends_on:
+      - broker
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://broker:9092
+      SCHEMA_REGISTRY_CUB_KAFKA_TIMEOUT: 300
+    restart: unless-stopped
+
+  kafka-connect:
+    image: confluentinc/cp-kafka-connect${CONFLUENT_VERSION_TAG}
+    container_name: kafka-connect
+    depends_on:
+      - broker
+      - schema-registry
+    ports:
+      - 8083:8083
+    environment:
+      CONNECT_CUB_KAFKA_TIMEOUT: 300
+      CONNECT_BOOTSTRAP_SERVERS: "broker:9092"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "kafka-connect"
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: kafka-connect
+      CONNECT_CONFIG_STORAGE_TOPIC: _kafka-connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: _kafka-connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: _kafka-connect-status
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
+      CONNECT_LOG4J_LOGGERS: "org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR"
+      CONNECT_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN: "[%d] %p %X{connector.context}%m (%c:%L)%n"
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components/,/data/connect-jars"
+      # External secrets config
+      # See https://docs.confluent.io/current/connect/security.html#externalizing-secrets
+      CONNECT_CONFIG_PROVIDERS: "file"
+      CONNECT_CONFIG_PROVIDERS_FILE_CLASS: "org.apache.kafka.common.config.provider.FileConfigProvider"
+    volumes:
+      - ./docker/kafka-connect/config/:/kafka-connect/config
+      - ./docker/kafka-connect/scripts/:/kafka-connect/scripts
+    command:
+      # In the command section, $ are replaced with $$ to avoid the error 'Invalid interpolation format for "command" option'
+      - bash
+      - -c
+      - |
+        echo "===> Installing connector plugins"
+        confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:0.4.0
+        confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:10.2.0
+        #
+        echo "===> Launching Kafka Connect worker"
+        /etc/confluent/docker/run & 
+        #
+        echo "===> Waiting for Kafka Connect to start listening on kafka-connect ⏳"
+        while [ $$(curl -s -o /dev/null -w %{http_code} http://kafka-connect:8083/connectors) -eq 000 ] ; do
+          echo -e $$(date) " Kafka Connect listener HTTP state: " $$(curl -s -o /dev/null -w %{http_code} http://kafka-connect:8083/connectors) " (waiting for 200)"
+          sleep 5
+        done
+        #
+        sleep 5
+        echo -e "\n ===> Creating Kafka Connectors"
+        /kafka-connect/scripts/create-datagen-source-users.sh
+        sleep infinity
+  
+  control-center:
+    image: confluentinc/cp-enterprise-control-center${CONFLUENT_VERSION_TAG}
+    hostname: control-center
+    container_name: control-center
+    depends_on:
+      - zookeeper
+      - broker
+      - schema-registry
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: "broker:9092"
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      CONTROL_CENTER_KSQL_URL: "http://ksqldb-server:8088"
+      CONTROL_CENTER_KSQL_KSQLDB_URL: "http://ksqldb-server:8088"
+      CONTROL_CENTER_KSQL_ADVERTISED_URL: "http://localhost:8088"
+      CONTROL_CENTER_KSQL_KSQLDB_ADVERTISED_URL: "http://localhost:8088"
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONTROL_CENTER_CONNECT_CLUSTER: "kafka-connect:8083"
+      CONTROL_CENTER_CONNECT_CONNECT_CLUSTER: "kafka-connect:8083"
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      CONTROL_CENTER_COMMAND_TOPIC_REPLICATION: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_REPLICATION: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_REPLICATION: 1
+      CONTROL_CENTER_STREAMS_NUM_STREAM_THREADS: 1
+      CONTROL_CENTER_STREAMS_CACHE_MAX_BYTES_BUFFERING: 104857600
+      PORT: 9021
+
+  apache-superset:
+    image: apache/superset
+    container_name: apache-superset
+    ports:
+      - "8044:8088"
+    restart: unless-stopped
+    volumes:
+      - ./docker/superset/config/:/etc/superset
+    environment:
+      - PYTHONPATH=/app/pythonpath:/etc/superset
+
+  openssh-client:
+    image: entechlog/openssh-client
+    container_name: openssh-client
+    build: ./docker/openssh-client/docker/
+    environment:
+      - SUPERSET_USER=${SUPERSET_USER}
+      - SUPERSET_PASSWORD=${SUPERSET_PASSWORD}
+    depends_on:
+      - apache-superset
+    tty: true
+    volumes:
+      - //var/run/docker.sock:/var/run/docker.sock:rw
+      - ./docker/openssh-client/scripts/initialize-superset.sh:/usr/src/scripts/initialize-superset.sh
+    command:
+      # In the command section, $ are replaced with $$ to avoid the error 'Invalid interpolation format for "command" option'
+      - bash
+      - -c
+      - |
+        sleep 30
+        /usr/src/scripts/initialize-superset.sh
+        sleep 10
+
+  materialized:
+    image: materialize/materialized${MATERIALIZE_VERSION_TAG}
+    container_name: materialized
+    volumes:
+      - ./data:/data
+    ports:
+      - "6875:6875"
+
+  mzcli:
+    image: materialize/cli
+    container_name: mzcli
+    init: true
+    tty: true
+    depends_on:
+      - materialize
+
+  kafkacat:
+    image: edenhill/kafkacat:1.6.0
+    container_name: kafkacat
+    entrypoint: 
+      - /bin/sh 
+      - -c 
+      - |
+        apk add jq; 
+        while [ 1 -eq 1 ];do sleep 60;done
