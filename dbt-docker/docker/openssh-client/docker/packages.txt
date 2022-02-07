@@ -1,0 +1,4 @@
+ openssh-client
+ bash
+ docker
+ 

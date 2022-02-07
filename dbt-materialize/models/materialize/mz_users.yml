@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: mz_users
+    description: ""
+    columns:
+      - name: event_date
+        description: ""
+        tests:
+          - not_null
+
+      - name: gender
+        description: ""
+
+      - name: count
+        description: ""
