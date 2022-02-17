@@ -1,11 +1,13 @@
 # dbt-examples
 
-## Demo
+## Blog with Demo Instructions
 - [dbt Snowflake](https://www.entechlog.com/blog/data/exploring-dbt-with-snowflake/)
 - [dbt Postgres](https://www.entechlog.com/blog/data/how-to-configure-dbt-for-postgres/)
-- [dbt Materialize](https://www.entechlog.com/blog/data/how-to-setup-dbt-for-materialize-db)
+- [dbt Materialize with Kafka](https://www.entechlog.com/blog/data/how-to-setup-dbt-for-materialize-db)
+- [dbt Materialize with Redpanda](https://www.entechlog.com/blog/data/how-to-setup-dbt-for-materialize-db-with-streaming-data-from-redpanda)
 
-## Time sync issue fix
+## Notes
+### Time sync issue fix
 
 - [See here to read more about this error](https://www.studytonight.com/post/how-to-resolve-amazon-s3-file-upload-error-requesttimetooskewed)
 
@@ -15,7 +17,7 @@ docker run --privileged --rm entechlog/dbt date -s "$(date -u "+%Y-%m-%d %H:%M:%
 docker run --privileged --rm entechlog/dbt date -s "$("2021-04-27 19:34:12")"
 ```
 
-## Airflow Integration
+### Airflow Integration
 
 - Download and run [Docker](https://docs.docker.com/docker-for-mac/install/)
 - Download the [Astro CLI](https://github.com/astronomer/astro-cli)

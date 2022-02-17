@@ -1,0 +1,36 @@
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'dbt_materialize_redpanda_demo'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'dbt-materialize-redpanda'
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+docs-paths: ["docs"]
+asset-paths: ["assets"]
+
+target-path: "target"  # directory which will store compiled SQL files
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_modules"
+
+vars:
+  redpanda_broker: 'redpanda:9092'
+
+models:
+  dbt_materialize_redpanda_demo:
+    # Config indicated by + and applies to all files under models/sources/
+    materialized: view
+    sources:
+      +materialized: sources
+      +schema: sources
+    staging:
+      +schema: staging
+      +materialized: view
+    marts:
+      +schema: marts
+      +materialized: materializedview
