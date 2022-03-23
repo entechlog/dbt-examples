@@ -12,10 +12,10 @@ profile: 'dbt-snowflake'
 # These configurations specify where dbt should look for different types of files.
 # The `source-paths` config, for example, states that models in this project can be
 # found in the "models/" directory. You probably won't need to change these!
-source-paths: ["models"]
+model-paths: ["models"]
 analysis-paths: ["analysis"]
 test-paths: ["tests"]
-data-paths: ["data"]
+seed-paths: ["data"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 docs-paths: ["docs"]
@@ -35,6 +35,13 @@ vars:
     dbt_artifacts_database: 'DBT_DEMO_STAGING' # optional, default is your target database
     dbt_artifacts_schema: 'utils' # optional, default is 'dbt_artifacts'
     dbt_artifacts_table: 'dbt_artifacts' # optional, default is 'artifacts'
+
+  dbt_snow_utils:
+    start_date: 
+    pipe_copy_history_filter_key: "hours"
+    pipe_copy_history_filter_value: -36
+    pipe_usage_history_filter_key: "day"
+    pipe_usage_history_filter_value: -2
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -63,6 +70,17 @@ models:
         database: DBT_DEMO_STAGING
         schema: UTILS
         materialized: table
+
+  dbt_snow_utils:
+    staging:
+      database: "DEMO_DB"
+      schema: staging
+    marts:
+      database: "DEMO_DB"
+      schema: marts
+    presentation:
+      database: "DEMO_DB"
+      schema: presentation
 
   dbt_artifacts:
     database: DBT_DEMO_STAGING

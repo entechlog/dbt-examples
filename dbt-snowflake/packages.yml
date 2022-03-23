@@ -1,17 +1,19 @@
 packages:
   - package: dbt-labs/dbt_utils
-    version: 0.7.0
+    version: ">=0.7.0"
   - package: calogica/dbt_expectations
-    version: 0.4.0
+    version: ">=0.4.0"
   - package: dbt-labs/codegen
-    version: 0.4.0
+    version: ">=0.4.0"
   - package: yu-iskw/dbt_airflow_macros
-    version: 0.2.2
+    version: ">=0.2.2"
   - package: Datavault-UK/dbtvault
-    version: 0.7.7
+    version: ">=0.7.7"
 #  - package: dbt-labs/logging
 #    version: 0.4.2
 #  - package: tailsdotcom/dbt_artifacts
 #    version: 0.4.3
   - git: "https://github.com/entechlog/dbt-snow-mask.git"
-    revision: 0.1.5
+    revision: 0.1.7
+  - git: "https://github.com/entechlog/dbt-snow-utils.git"
+    revision: 0.1.2
