@@ -30,6 +30,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 vars:
   logging_db: 'DBT_DEMO_STAGING'
   logging_schema: 'utils'
+  start_date: '2005-05-24'
 
   dbt_artifacts:
     dbt_artifacts_database: 'DBT_DEMO_STAGING' # optional, default is your target database
@@ -54,7 +55,7 @@ models:
   #  - "{{ log_model_start_event() }}"
   post-hook: 
   #  - "{{ log_model_end_event() }}"
-    - "{{ dbt_snow_mask.apply_masking_policy() }}"
+  #  - "{{ dbt_snow_mask.apply_masking_policy() }}"
 
   dbt_snowflake_demo:
       materialized: table
