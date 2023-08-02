@@ -27,9 +27,10 @@ jobs:
     - name: 'Step 03 - Verify dbt'
       run: dbt --version
     - name: 'Step 04 - Compile dbt'
+      working-directory: ./dbt-docs/dbt
       run:  |
         ls -ltra
-        export DBT_PROFILES_DIR=$PWD/dbt-docs/dbt
+        export DBT_PROFILES_DIR=./dbt-docs/dbt
         dbt debug -t $ENV_CODE
         dbt compile -t $ENV_CODE
     - name: 'Step 05 - Check dbt model linting'
