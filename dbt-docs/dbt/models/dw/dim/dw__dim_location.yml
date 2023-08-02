@@ -1,0 +1,16 @@
+version: 2
+models:
+  - name: dw__dim_location
+    description: This table contains the dimension data for locations.
+
+    columns:
+      - name: location_id
+        description: The surrogate key for the location.
+        tests:
+          - unique
+      - name: latitude
+        description: The latitude coordinate of the location.
+      - name: longitude
+        description: The longitude coordinate of the location.
+      - name: location_name
+        description: The name of the location.

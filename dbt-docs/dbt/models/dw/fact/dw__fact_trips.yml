@@ -1,0 +1,38 @@
+version: 2
+models:
+  - name: dw__fact_trips
+    description: This table contains the fact data for trips.
+
+    columns:
+      - name: vendor_id
+        description: The foreign key referencing the vendor dimension.
+      - name: pickup_date_id
+        description: The foreign key referencing the pickup date dimension.
+      - name: dropoff_date_id
+        description: The foreign key referencing the dropoff date dimension.
+      - name: pickup_location_id
+        description: The foreign key referencing the pickup location dimension.
+      - name: dropoff_location_id
+        description: The foreign key referencing the dropoff location dimension.
+      - name: rate_id
+        description: The foreign key referencing the rate dimension.
+      - name: payment_type_id
+        description: The foreign key referencing the payment dimension.
+      - name: passenger_count
+        description: The number of passengers on the trip.
+      - name: trip_distance
+        description: The distance of the trip.
+      - name: fare_amount
+        description: The fare amount for the trip.
+      - name: extra
+        description: The extra charges for the trip.
+      - name: mta_tax
+        description: The MTA tax for the trip.
+      - name: tip_amount
+        description: The tip amount for the trip.
+      - name: tolls_amount
+        description: The tolls amount for the trip.
+      - name: improvement_surcharge
+        description: The improvement surcharge for the trip.
+      - name: total_amount
+        description: The total amount for the trip.

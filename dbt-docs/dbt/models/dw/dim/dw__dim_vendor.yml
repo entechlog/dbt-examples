@@ -1,0 +1,14 @@
+version: 2
+models:
+  - name: dw__dim_vendor
+    description: This table contains the dimension data for vendors.
+
+    columns:
+      - name: vendor_id
+        description: The surrogate key for the vendor.
+        tests:
+          - unique
+      - name: vendor_code
+        description: The natural key for the vendor.
+      - name: vendor_name
+        description: The name of the vendor.

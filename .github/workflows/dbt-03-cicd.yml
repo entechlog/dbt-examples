@@ -1,0 +1,41 @@
+name: 'dbt cicd pipeline'
+
+# Triggers
+on:
+  # Triggers the workflow on push to release branch
+  push:
+    branches: 
+      - 'release/*'
+
+jobs:
+  cicd-dbt:
+    runs-on: ubuntu-latest
+    environment: cicd
+    env:
+      ENV_CODE: cicd
+      PROJ_CODE: entechlog
+      SNOWSQL_ACCOUNT: ${{ secrets.SNOWSQL_ACCOUNT }}
+      SNOWSQL_PWD: ${{ secrets.SNOWSQL_PWD }}
+
+    steps:
+    - name: 'Step 01 - Checkout current branch'
+      uses: actions/checkout@v2
+    - name: 'Step 02 - Install dbt'
+      run: pip3 install dbt-core dbt-snowflake
+    - name: 'Step 03 - Verify dbt'
+      run: dbt --version
+    - name: 'Step 04 - Compile dbt'
+      run:  |
+        ls -ltra
+        export DBT_PROFILES_DIR=DBT_PROFILES_DIR=$PWD/dbt-examples/dbt-docs/dbt
+        dbt debug -t $ENV_CODE
+        dbt compile -t $ENV_CODE
+    - name: 'Step 05 - Run dbt models'
+      run:  |
+        export DBT_PROFILES_DIR=DBT_PROFILES_DIR=$PWD/dbt-examples/dbt-docs/dbt
+        dbt run -t $ENV_CODE 
+    - name: 'Step 06 - Test dbt models'
+      run:  |
+        export DBT_PROFILES_DIR=DBT_PROFILES_DIR=$PWD/dbt-examples/dbt-docs/dbt
+        dbt test -t $ENV_CODE 
+      
