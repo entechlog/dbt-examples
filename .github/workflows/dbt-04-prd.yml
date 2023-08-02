@@ -25,22 +25,26 @@ jobs:
     - name: 'Step 03 - Verify dbt'
       run: dbt --version
     - name: 'Step 04 - Compile dbt'
+      working-directory: ./dbt-docs/dbt
       run:  |
         ls -ltra
-        export DBT_PROFILES_DIR=$PWD/dbt-docs/dbt
+        export DBT_PROFILES_DIR=$PWD
         dbt debug -t $ENV_CODE
         dbt compile -t $ENV_CODE 
     - name: 'Step 05 - Run dbt models'
+      working-directory: ./dbt-docs/dbt
       run:  |
-        export DBT_PROFILES_DIR=$PWD/dbt-docs/dbt
+        export DBT_PROFILES_DIR=$PWD
         dbt run -t $ENV_CODE  
     - name: 'Step 06 - Test dbt models'
+      working-directory: ./dbt-docs/dbt
       run:  | 
-        export DBT_PROFILES_DIR=$PWD/dbt-docs/dbt
+        export DBT_PROFILES_DIR=$PWD
         dbt test -t $ENV_CODE 
     - name: 'Step 07 - Generate and publish dbt docs'
+      working-directory: ./dbt-docs/dbt
       run:  | 
-        export DBT_PROFILES_DIR=$PWD/dbt-docs/dbt
+        export DBT_PROFILES_DIR=$PWD
         dbt docs generate -t $ENV_CODE
         cd target
         mkdir $PWD/docs
