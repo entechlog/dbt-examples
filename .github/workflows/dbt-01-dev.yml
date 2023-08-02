@@ -29,7 +29,7 @@ jobs:
     - name: 'Step 04 - Compile dbt'
       run:  |
         ls -ltra
-        export DBT_PROFILES_DIR=$PWD/dbt-examples/dbt-docs/dbt
+        export DBT_PROFILES_DIR=$PWD/dbt-docs/dbt
         dbt debug -t $ENV_CODE
         dbt compile -t $ENV_CODE
     - name: 'Step 05 - Check dbt model linting'
