@@ -1,0 +1,17 @@
+dbt-snowflake:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWSQL_ACCOUNT') }}"
+
+      # User/password auth
+      user: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_USER"
+      password: "{{ env_var('SNOWSQL_PWD') }}"
+
+      role: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_ROLE"
+      database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_STAGING_DB"
+      warehouse: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_WH_XS"
+      schema: UTILS
+      threads: 1
+      client_session_keep_alive: False

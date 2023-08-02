@@ -132,7 +132,7 @@ dmypy.json
 target/
 dbt_modules/
 logs/
-profiles.yml
+#profiles.yml
 dbt_packages/
 
 # Passwords 
@@ -280,7 +280,7 @@ dmypy.json
 target/
 dbt_modules/
 logs/
-profiles.yml
+#profiles.yml
 
 # Passwords 
 *.pem

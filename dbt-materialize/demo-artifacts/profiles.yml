@@ -1,0 +1,12 @@
+dbt-materialize:
+  target: dev
+  outputs:
+    dev:
+      type: materialize
+      threads: 1
+      host: "{{ env_var('MATERIALIZE_HOST') }}"
+      port: 6875
+      user: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_USER"
+      pass: "{{ env_var('MATERIALIZE_PWD') }}"
+      dbname: materialize
+      schema: public
