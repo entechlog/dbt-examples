@@ -6,7 +6,9 @@ on:
   push:
     branches: 
       - 'feature/*'
-
+    paths:
+      - ./dbt-docs/dbt
+      
 jobs:
   dev-dbt:
     runs-on: ubuntu-latest
