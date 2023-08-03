@@ -45,13 +45,27 @@ jobs:
         mkdir ${{ github.workspace }}/docs
         cp *.json *.html graph.gpickle ${{ github.workspace }}/docs
         ls -ltra ${{ github.workspace }}/docs
-    - name: 'Step 05 - Upload pages'
+    - name: 'Step 05 - Upload pages to artifact'
       uses: actions/upload-pages-artifact@v2
       with:
         path: ${{ github.workspace }}/docs
+    - name: 'Step 06 - Deploy to Netlify'
+      uses: nwtgck/actions-netlify@v2.0
+      with:
+        publish-dir: ${{ github.workspace }}/docs
+        production-branch: main
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        deploy-message: "Deploy from GitHub Actions"
+        enable-pull-request-comment: true
+        enable-commit-comment: false
+        overwrites-pull-request-comment: true
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      timeout-minutes: 1
 
-# Deploy job
-  deploy-github-pages:
+# Deploy to Github pages
+  deploy-to-github-pages:
 
     # Add a dependency to the build job
     needs: build
