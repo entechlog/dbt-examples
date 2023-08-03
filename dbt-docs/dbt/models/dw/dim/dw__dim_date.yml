@@ -1,0 +1,30 @@
+version: 2
+models:
+  - name: dw__dim_date
+    description: This table contains the dimension data for dates.
+
+    columns:
+      - name: date_id
+        description: The surrogate key for the date.
+        tests:
+          - unique
+      - name: date
+        description: The date value.
+      - name: year
+        description: The year component of the date.
+      - name: month
+        description: The month component of the date.
+      - name: day
+        description: The day component of the date.
+      - name: day_name
+        description: The name of the day.
+      - name: month_name
+        description: The name of the month.
+      - name: day_of_week
+        description: The day of the week.
+      - name: day_of_year
+        description: The day of the year.
+      - name: is_weekend
+        description: Flag indicating if it's a weekend day.
+      - name: is_holiday
+        description: Flag indicating if it's a holiday.

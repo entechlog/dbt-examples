@@ -1,0 +1,11 @@
+dbt-materialize-redpanda:
+  outputs:
+    dev:
+      dbname: materialize
+      host: "{{ env_var('MATERIALIZE_HOST') }}"
+      user: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_USER"
+      pass: "{{ env_var('MATERIALIZE_PWD') }}"
+      port: 6875
+      schema: public
+      threads: 1
+      type: materialize

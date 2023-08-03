@@ -1,0 +1,95 @@
+yellow_cab:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWSQL_ACCOUNT') }}"
+
+      # User/password auth
+      user: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_USER"
+      password: "{{ env_var('SNOWSQL_PWD') }}"
+      #authenticator: "{{ env_var('SNOWSQL_AUTHENTICATOR') }}"
+
+      # Default role, db, warehouse, schema for dbt
+      role: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_ROLE"
+      database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_STAGING_DB"
+      warehouse: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_WH_XS"
+      schema: "UTIL"
+      threads: 25
+      client_session_keep_alive: False
+
+      # optional
+      connect_retries: 5 # default 0
+      connect_timeout: 30 # default: 10
+      retry_on_database_errors: True # default: false 
+      retry_all: True  # default: false  
+
+    stg:
+      type: snowflake
+      account: "{{ env_var('SNOWSQL_ACCOUNT') }}"
+
+      # User/password auth
+      user: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_USER"
+      password: "{{ env_var('SNOWSQL_PWD') }}"
+      #authenticator: "{{ env_var('SNOWSQL_AUTHENTICATOR') }}"
+
+      # Default role, db, warehouse, schema for dbt
+      role: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_ROLE"
+      database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_STAGING_DB"
+      warehouse: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_WH_XS"
+      schema: "UTIL"
+      threads: 25
+      client_session_keep_alive: False
+
+      # optional
+      connect_retries: 5 # default 0
+      connect_timeout: 30 # default: 10
+      retry_on_database_errors: True # default: false 
+      retry_all: True  # default: false 
+
+    cicd:
+      type: snowflake
+      account: "{{ env_var('SNOWSQL_ACCOUNT') }}"
+
+      # User/password auth
+      user: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_USER"
+      password: "{{ env_var('SNOWSQL_PWD') }}"
+      #authenticator: "{{ env_var('SNOWSQL_AUTHENTICATOR') }}"
+
+      # Default role, db, warehouse, schema for dbt
+      role: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_ROLE"
+      database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_STAGING_DB"
+      warehouse: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_WH_XS"
+      schema: "UTIL"
+      threads: 25
+      client_session_keep_alive: False
+
+      # optional
+      connect_retries: 5 # default 0
+      connect_timeout: 30 # default: 10
+      retry_on_database_errors: True # default: false 
+      retry_all: True  # default: false 
+
+    prd:
+      type: snowflake
+      account: "{{ env_var('SNOWSQL_ACCOUNT') }}"
+
+      # User/password auth
+      user: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_USER"
+      password: "{{ env_var('SNOWSQL_PWD') }}"
+      #authenticator: "{{ env_var('SNOWSQL_AUTHENTICATOR') }}"
+
+      # Default role, db, warehouse, schema for dbt
+      role: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_ROLE"
+      database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_STAGING_DB"
+      warehouse: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DBT_WH_XS"
+      schema: "UTIL"
+      threads: 25
+      client_session_keep_alive: False
+
+      # optional
+      connect_retries: 5 # default 0
+      connect_timeout: 30 # default: 10
+      retry_on_database_errors: True # default: false 
+      retry_all: True  # default: false 
+      

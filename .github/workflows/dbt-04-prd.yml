@@ -1,0 +1,60 @@
+name: 'dbt prd pipeline'
+
+# Triggers
+on:
+  # Triggers the workflow on push to release branch
+  push:
+    branches:
+      - main
+  # Triggers the workflow manually from GUI
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: prd
+    env:
+      ENV_CODE: prd
+      PROJ_CODE: entechlog
+      SNOWSQL_ACCOUNT: ${{ secrets.SNOWSQL_ACCOUNT }}
+      SNOWSQL_PWD: ${{ secrets.SNOWSQL_PWD }}
+      
+    steps:
+    - name: 'Step 01 - Checkout current branch'
+      uses: actions/checkout@v2
+    - name: 'Step 02 - Install dbt'
+      run: pip3 install dbt-core dbt-snowflake
+    - name: 'Step 03 - Verify dbt'
+      run: dbt --version
+    - name: 'Step 04 - Compile dbt'
+      working-directory: ./dbt-docs/dbt
+      run:  |
+        ls -ltra
+        export DBT_PROFILES_DIR=$PWD
+        dbt deps
+        dbt debug -t $ENV_CODE
+        dbt compile -t $ENV_CODE 
+    - name: 'Step 05 - Generate and publish dbt docs'
+      working-directory: ./dbt-docs/dbt
+      run:  | 
+        export DBT_PROFILES_DIR=$PWD
+        dbt deps
+        dbt docs generate -t $ENV_CODE
+        cd target
+        mkdir $PWD/docs
+        cp *.json *.html graph.gpickle $PWD/docs
+        ls -ltra $PWD/docs
+    - name: 'Step 05 - Upload pages'
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: $PWD/dbt-docs/dbt/docs
+
+  deploy:
+    environment:
+      name: github-pages
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

@@ -1,0 +1,14 @@
+version: 2
+models:
+  - name: dw__dim_payment_type
+    description: This table contains the dimension data for payments.
+
+    columns:
+      - name: payment_type_id
+        description: The surrogate key for the payment.
+        tests:
+          - unique
+      - name: payment_type_code
+        description: The natural key for the payment.
+      - name: payment_type_name
+        description: The type of the payment.

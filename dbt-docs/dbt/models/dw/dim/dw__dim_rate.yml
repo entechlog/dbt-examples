@@ -1,0 +1,14 @@
+version: 2
+models:
+  - name: dw__dim_rate
+    description: This table contains the dimension data for rates.
+
+    columns:
+      - name: rate_id
+        description: The surrogate key for the rate.
+        tests:
+          - unique
+      - name: rate_code
+        description: The natural key for the rate.
+      - name: rate_name
+        description: The name of the rate.

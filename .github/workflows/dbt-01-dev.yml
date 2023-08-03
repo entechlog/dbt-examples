@@ -1,0 +1,45 @@
+name: 'dbt dev pipeline'
+
+# Triggers
+on:
+  # Triggers the workflow on push to feature branch
+  push:
+    branches: 
+      - 'feature/*'
+    # paths:
+    #   - ./dbt-docs/dbt
+  # Triggers the workflow manually from GUI
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: dev
+    env:
+      ENV_CODE: dev
+      PROJ_CODE: entechlog
+      SNOWSQL_ACCOUNT: ${{ secrets.SNOWSQL_ACCOUNT }}
+      SNOWSQL_PWD: ${{ secrets.SNOWSQL_PWD }}
+
+    steps:
+    - name: 'Step 01 - Checkout current branch'
+      uses: actions/checkout@v2
+    - name: 'Step 02 - Install dbt'
+      run:  |
+        pip3 install dbt-core dbt-snowflake
+        pip3 install sqlfluff sqlfluff-templater-dbt
+        pip install shandy-sqlfmt[jinjafmt]
+    - name: 'Step 03 - Verify dbt'
+      run: dbt --version
+    - name: 'Step 04 - Compile dbt'
+      working-directory: ./dbt-docs/dbt
+      run:  |
+        ls -ltra
+        export DBT_PROFILES_DIR=$PWD
+        dbt deps
+        dbt debug -t $ENV_CODE
+        dbt compile -t $ENV_CODE
+    - name: 'Step 05 - Check dbt model linting'
+      working-directory: ./dbt-docs/dbt
+      # code should be formatted by "sqlfmt models"
+      run: "sqlfluff lint models --dialect snowflake --rules L019,L020,L021,L022"
