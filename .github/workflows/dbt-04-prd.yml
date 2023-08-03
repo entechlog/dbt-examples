@@ -14,8 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: prd
     env:
-      ENV_CODE: ${{env.ENV_CODE}}
-      PROJ_CODE: ${{env.PROJ_CODE}}
       SNOWSQL_ACCOUNT: ${{ secrets.SNOWSQL_ACCOUNT }}
       SNOWSQL_PWD: ${{ secrets.SNOWSQL_PWD }}
       
