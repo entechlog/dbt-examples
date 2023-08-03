@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     env:
+      ENV_CODE: ${{vars.ENV_CODE}}
+      PROJ_CODE: ${{vars.PROJ_CODE}}
       SNOWSQL_ACCOUNT: ${{ secrets.SNOWSQL_ACCOUNT }}
       SNOWSQL_PWD: ${{ secrets.SNOWSQL_PWD }}
 
