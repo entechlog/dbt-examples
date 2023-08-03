@@ -21,7 +21,7 @@ jobs:
       
     steps:
     - name: 'Step 01 - Checkout current branch'
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: 'Step 02 - Install dbt'
       run: pip3 install dbt-core dbt-snowflake
     - name: 'Step 03 - Verify dbt'
@@ -34,20 +34,21 @@ jobs:
         dbt deps
         dbt debug -t $ENV_CODE
         dbt compile -t $ENV_CODE 
-    - name: 'Step 05 - Generate and publish dbt docs'
+    - name: 'Step 05 - Generate dbt docs'
       working-directory: ./dbt-docs/dbt
       run:  | 
         export DBT_PROFILES_DIR=$PWD
         dbt deps
         dbt docs generate -t $ENV_CODE
         cd target
-        mkdir $PWD/docs
-        cp *.json *.html graph.gpickle $PWD/docs
-        ls -ltra $PWD/docs
+        mkdir ${{ github.workspace }}/docs
+        cp *.json *.html graph.gpickle ${{ github.workspace }}/docs
+        ls -ltra ${{ github.workspace }}/docs
     - name: 'Step 05 - Upload pages'
-      uses: actions/upload-pages-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
-        path: $PWD/dbt-docs/dbt/docs
+        path: ${{ github.workspace }}/docs
+        retention-days: 1
 
   deploy:
     environment:

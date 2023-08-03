@@ -21,7 +21,7 @@ jobs:
 
     steps:
     - name: 'Step 01 - Checkout current branch'
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: 'Step 02 - Install dbt'
       run: pip3 install dbt-core dbt-snowflake
     - name: 'Step 03 - Verify dbt'
