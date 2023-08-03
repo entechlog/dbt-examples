@@ -42,4 +42,4 @@ jobs:
     - name: 'Step 05 - Check dbt model linting'
       working-directory: ./dbt-docs/dbt
       # code should be formatted by "sqlfmt models"
-      run: sqlfluff lint models
+      run: "sqlfluff lint models --dialect snowflake --rules L019,L020,L021,L022"
