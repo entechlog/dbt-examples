@@ -1,48 +1,54 @@
-{{ config(
-  alias='dim_vendor',
-  materialized='view',
-  tags=['stage', 'dim']
-) }}
+{{ config(alias="dim_vendor", materialized="view", tags=["stage", "dim"]) }}
 
-WITH source AS (
-  SELECT DISTINCT
-    vendor_code::VARCHAR(128) AS vendor_code,
-    vendor_name::VARCHAR(128) AS vendor_name
-  FROM {{ ref('ref__vendor') }}
-),
+with
+    source as (
+        select distinct
+            vendor_code::varchar(128) as vendor_code,
+            vendor_name::varchar(128) as vendor_name
+        from {{ ref("ref__vendor") }}
+    ),
 
-union_with_defaults AS (
-  SELECT
-    {{ dbt_utils.generate_surrogate_key(['vendor_code']) }}::VARCHAR(128) AS vendor_id,
-    vendor_code,
-    vendor_name
-  FROM source
+    union_with_defaults as (
+        select
+            {{ dbt_utils.generate_surrogate_key(["vendor_code"]) }}::varchar(
+                128
+            ) as vendor_id,
+            vendor_code,
+            vendor_name
+        from source
 
-  UNION
+        union
 
-  SELECT '0'::VARCHAR(128) AS vendor_id,
-    'Unknown'::VARCHAR(128) AS vendor_code,
-    'Unknown'::VARCHAR(128) AS vendor_name
+        select
+            '0'::varchar(128) as vendor_id,
+            'Unknown'::varchar(128) as vendor_code,
+            'Unknown'::varchar(128) as vendor_name
 
-  UNION
+        union
 
-  SELECT '1'::VARCHAR(128) AS vendor_id,
-    'Not Applicable'::VARCHAR(128) AS vendor_code,
-    'Not Applicable'::VARCHAR(128) AS vendor_name
+        select
+            '1'::varchar(128) as vendor_id,
+            'Not Applicable'::varchar(128) as vendor_code,
+            'Not Applicable'::varchar(128) as vendor_name
 
-  UNION
+        union
 
-  SELECT '2'::VARCHAR(128) AS vendor_id,
-    'All'::VARCHAR(128) AS vendor_code,
-    'All'::VARCHAR(128) AS vendor_name
-),
+        select
+            '2'::varchar(128) as vendor_id,
+            'All'::varchar(128) as vendor_code,
+            'All'::varchar(128) as vendor_name
+    ),
 
-deduplicated AS (
-  SELECT *,
-    ROW_NUMBER() OVER (PARTITION BY vendor_code, vendor_name ORDER BY vendor_id, vendor_code, vendor_name) AS row_num
-  FROM union_with_defaults
-)
+    deduplicated as (
+        select
+            *,
+            row_number() over (
+                partition by vendor_code, vendor_name
+                order by vendor_id, vendor_code, vendor_name
+            ) as row_num
+        from union_with_defaults
+    )
 
-SELECT vendor_id, vendor_code, vendor_name
-FROM deduplicated
-WHERE row_num = 1
+select vendor_id, vendor_code, vendor_name
+from deduplicated
+where row_num = 1

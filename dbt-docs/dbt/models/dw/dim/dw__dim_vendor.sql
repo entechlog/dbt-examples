@@ -1,12 +1,8 @@
-{{ config(
-  alias='dim_vendor',
-  materialized='table',
-  transient=false,
-  tags=['dw', 'dim']
-) }}
+{{
+    config(
+        alias="dim_vendor", materialized="table", transient=false, tags=["dw", "dim"]
+    )
+}}
 
-SELECT
-  vendor_id,
-  vendor_code,
-  vendor_name
-FROM {{ ref('stg__dim_vendor') }}
+select vendor_id, vendor_code, vendor_name
+from {{ ref("stg__dim_vendor") }}

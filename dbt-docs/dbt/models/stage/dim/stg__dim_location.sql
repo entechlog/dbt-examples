@@ -1,58 +1,64 @@
-{{ config(
-  alias='dim_location',
-  materialized='view',
-  tags=['stage', 'dim']
-) }}
+{{ config(alias="dim_location", materialized="view", tags=["stage", "dim"]) }}
 
-WITH source AS (
-  SELECT
-    DISTINCT pickup_latitude::VARCHAR(128) AS pickup_latitude,
-    pickup_longitude::VARCHAR(128) AS pickup_longitude,
-    dropoff_latitude::VARCHAR(128) AS dropoff_latitude,
-    dropoff_longitude::VARCHAR(128) AS dropoff_longitude
-  FROM {{ ref('trip_data_nyc') }}
-),
+with
+    source as (
+        select distinct
+            pickup_latitude::varchar(128) as pickup_latitude,
+            pickup_longitude::varchar(128) as pickup_longitude,
+            dropoff_latitude::varchar(128) as dropoff_latitude,
+            dropoff_longitude::varchar(128) as dropoff_longitude
+        from {{ ref("trip_data_nyc") }}
+    ),
 
-union_with_defaults AS (
-  SELECT
-    {{ dbt_utils.generate_surrogate_key(['pickup_latitude', 'pickup_longitude']) }}::VARCHAR(128) AS location_id,
-    pickup_latitude::VARCHAR(128) AS latitude,
-    pickup_longitude::VARCHAR(128) AS longitude
-  FROM source
+    union_with_defaults as (
+        select
+            {{
+                dbt_utils.generate_surrogate_key(
+                    ["pickup_latitude", "pickup_longitude"]
+                )
+            }}::varchar(128) as location_id,
+            pickup_latitude::varchar(128) as latitude,
+            pickup_longitude::varchar(128) as longitude
+        from source
 
-  UNION
+        union
 
-  SELECT
-    {{ dbt_utils.generate_surrogate_key(['dropoff_latitude', 'dropoff_longitude']) }}::VARCHAR(128) AS location_id,
-    dropoff_latitude::VARCHAR(128) AS latitude,
-    dropoff_longitude::VARCHAR(128) AS longitude
-  FROM source
+        select
+            {{
+                dbt_utils.generate_surrogate_key(
+                    ["dropoff_latitude", "dropoff_longitude"]
+                )
+            }}::varchar(128) as location_id,
+            dropoff_latitude::varchar(128) as latitude,
+            dropoff_longitude::varchar(128) as longitude
+        from source
 
-  UNION
+        union
 
-  SELECT '0'::VARCHAR(128),
-    'Unknown'::VARCHAR(128),
-    'Unknown'::VARCHAR(128)
+        select '0'::varchar(128), 'Unknown'::varchar(128), 'Unknown'::varchar(128)
 
-  UNION
+        union
 
-  SELECT '1'::VARCHAR(128),
-    'Not Applicable'::VARCHAR(128),
-    'Not Applicable'::VARCHAR(128)
+        select
+            '1'::varchar(128),
+            'Not Applicable'::varchar(128),
+            'Not Applicable'::varchar(128)
 
-  UNION
+        union
 
-  SELECT '2'::VARCHAR(128),
-    'All'::VARCHAR(128),
-    'All'::VARCHAR(128)
-),
+        select '2'::varchar(128), 'All'::varchar(128), 'All'::varchar(128)
+    ),
 
-deduplicated AS (
-  SELECT *,
-    ROW_NUMBER() OVER (PARTITION BY location_id, latitude, longitude ORDER BY location_id, latitude, longitude) AS row_num
-  FROM union_with_defaults
-)
+    deduplicated as (
+        select
+            *,
+            row_number() over (
+                partition by location_id, latitude, longitude
+                order by location_id, latitude, longitude
+            ) as row_num
+        from union_with_defaults
+    )
 
-SELECT location_id, latitude, longitude
-FROM deduplicated
-WHERE row_num = 1
+select location_id, latitude, longitude
+from deduplicated
+where row_num = 1

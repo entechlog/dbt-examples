@@ -1,48 +1,52 @@
-{{ config(
-  alias='dim_rate',
-  materialized='view',
-  tags=['stage', 'dim']
-) }}
+{{ config(alias="dim_rate", materialized="view", tags=["stage", "dim"]) }}
 
-WITH source AS (
-  SELECT DISTINCT
-    rate_code::VARCHAR(128) AS rate_code,
-    rate_name::VARCHAR(128) AS rate_name
-  FROM {{ ref('ref__rate') }}
-),
+with
+    source as (
+        select distinct
+            rate_code::varchar(128) as rate_code, rate_name::varchar(128) as rate_name
+        from {{ ref("ref__rate") }}
+    ),
 
-union_with_defaults AS (
-  SELECT
-    {{ dbt_utils.generate_surrogate_key(['rate_code']) }}::VARCHAR(128) AS rate_id,
-    rate_code,
-    rate_name
-  FROM source
+    union_with_defaults as (
+        select
+            {{ dbt_utils.generate_surrogate_key(["rate_code"]) }}::varchar(
+                128
+            ) as rate_id,
+            rate_code,
+            rate_name
+        from source
 
-  UNION
+        union
 
-  SELECT '0'::VARCHAR(128) AS rate_id,
-    'Unknown'::VARCHAR(128) AS rate_code,
-    'Unknown'::VARCHAR(128) AS rate_name
+        select
+            '0'::varchar(128) as rate_id,
+            'Unknown'::varchar(128) as rate_code,
+            'Unknown'::varchar(128) as rate_name
 
-  UNION
+        union
 
-  SELECT '1'::VARCHAR(128) AS rate_id,
-    'Not Applicable'::VARCHAR(128) AS rate_code,
-    'Not Applicable'::VARCHAR(128) AS rate_name
+        select
+            '1'::varchar(128) as rate_id,
+            'Not Applicable'::varchar(128) as rate_code,
+            'Not Applicable'::varchar(128) as rate_name
 
-  UNION
+        union
 
-  SELECT '2'::VARCHAR(128) AS rate_id,
-    'All'::VARCHAR(128) AS rate_code,
-    'All'::VARCHAR(128) AS rate_name
-),
+        select
+            '2'::varchar(128) as rate_id,
+            'All'::varchar(128) as rate_code,
+            'All'::varchar(128) as rate_name
+    ),
 
-deduplicated AS (
-  SELECT *,
-    ROW_NUMBER() OVER (PARTITION BY rate_code, rate_name ORDER BY rate_id, rate_code, rate_name) AS row_num
-  FROM union_with_defaults
-)
+    deduplicated as (
+        select
+            *,
+            row_number() over (
+                partition by rate_code, rate_name order by rate_id, rate_code, rate_name
+            ) as row_num
+        from union_with_defaults
+    )
 
-SELECT rate_id, rate_code, rate_name
-FROM deduplicated
-WHERE row_num = 1
+select rate_id, rate_code, rate_name
+from deduplicated
+where row_num = 1

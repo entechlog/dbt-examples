@@ -27,7 +27,8 @@ jobs:
     - name: 'Step 02 - Install dbt'
       run:  |
         pip3 install dbt-core dbt-snowflake
-        pip3 install sqlfluff
+        pip3 install sqlfluff sqlfluff-templater-dbt
+        pip install shandy-sqlfmt[jinjafmt]
     - name: 'Step 03 - Verify dbt'
       run: dbt --version
     - name: 'Step 04 - Compile dbt'
@@ -40,4 +41,5 @@ jobs:
         dbt compile -t $ENV_CODE
     - name: 'Step 05 - Check dbt model linting'
       working-directory: ./dbt-docs/dbt
+      # code should be formatted by "sqlfmt models"
       run: sqlfluff lint models
