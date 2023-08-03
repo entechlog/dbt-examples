@@ -10,6 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Build job
   build:
     runs-on: ubuntu-latest
     environment: prd
@@ -45,22 +46,29 @@ jobs:
         cp *.json *.html graph.gpickle ${{ github.workspace }}/docs
         ls -ltra ${{ github.workspace }}/docs
     - name: 'Step 05 - Upload pages'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-pages-artifact@v2
       with:
         path: ${{ github.workspace }}/docs
-        retention-days: 1
 
-  deploy:
+# Deploy job
+  deploy-github-pages:
+
+    # Add a dependency to the build job
+    needs: build
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
     environment:
       name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
     runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-      
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action
