@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  cicd-dbt:
+  build:
     runs-on: ubuntu-latest
     environment: cicd
     env:

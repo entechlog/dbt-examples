@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  stg-dbt:
+  build:
     runs-on: ubuntu-latest
     environment: stg
     env:

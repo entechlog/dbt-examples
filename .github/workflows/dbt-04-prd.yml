@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  prd-dbt:
+  build:
     runs-on: ubuntu-latest
     environment: prd
     env:
@@ -23,7 +23,7 @@ jobs:
     - name: 'Step 01 - Checkout current branch'
       uses: actions/checkout@v2
     - name: 'Step 02 - Install dbt'
-      run: pip3 install dbt
+      run: pip3 install dbt-core dbt-snowflake
     - name: 'Step 03 - Verify dbt'
       run: dbt --version
     - name: 'Step 04 - Compile dbt'
@@ -34,19 +34,7 @@ jobs:
         dbt deps
         dbt debug -t $ENV_CODE
         dbt compile -t $ENV_CODE 
-    - name: 'Step 05 - Run dbt models'
-      working-directory: ./dbt-docs/dbt
-      run:  |
-        export DBT_PROFILES_DIR=$PWD
-        dbt deps
-        dbt run -t $ENV_CODE  
-    - name: 'Step 06 - Test dbt models'
-      working-directory: ./dbt-docs/dbt
-      run:  | 
-        export DBT_PROFILES_DIR=$PWD
-        dbt deps
-        dbt test -t $ENV_CODE 
-    - name: 'Step 07 - Generate and publish dbt docs'
+    - name: 'Step 05 - Generate and publish dbt docs'
       working-directory: ./dbt-docs/dbt
       run:  | 
         export DBT_PROFILES_DIR=$PWD
@@ -56,3 +44,17 @@ jobs:
         mkdir $PWD/docs
         cp *.json *.html graph.gpickle $PWD/docs
         ls -ltra $PWD/docs
+    - name: 'Step 05 - Upload pages'
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: $PWD/dbt-docs/dbt/docs
+
+  deploy:
+    environment:
+      name: github-pages
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

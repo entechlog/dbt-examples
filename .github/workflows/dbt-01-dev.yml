@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
   
 jobs:
-  dev-dbt:
+  build:
     runs-on: ubuntu-latest
     environment: dev
     env:
