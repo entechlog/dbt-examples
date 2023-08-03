@@ -39,4 +39,5 @@ jobs:
         dbt debug -t $ENV_CODE
         dbt compile -t $ENV_CODE
     - name: 'Step 05 - Check dbt model linting'
+      working-directory: ./dbt-docs/dbt
       run: sqlfluff lint models
