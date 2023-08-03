@@ -33,6 +33,7 @@ jobs:
       run:  |
         ls -ltra
         export DBT_PROFILES_DIR=$PWD
+        dbt deps
         dbt debug -t $ENV_CODE
         dbt compile -t $ENV_CODE
     - name: 'Step 05 - Check dbt model linting'
