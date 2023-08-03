@@ -6,8 +6,8 @@ on:
   push:
     branches: 
       - 'feature/*'
-    paths:
-      - ./dbt-docs/dbt
+    # paths:
+    #   - ./dbt-docs/dbt
   # Triggers the workflow manually from GUI
   workflow_dispatch:
   
