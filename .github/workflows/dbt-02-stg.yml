@@ -6,6 +6,8 @@ on:
   push:
     branches:
       - develop
+  # Triggers the workflow manually from GUI
+  workflow_dispatch:
 
 jobs:
   stg-dbt:

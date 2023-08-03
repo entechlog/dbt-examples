@@ -6,6 +6,8 @@ on:
   push:
     branches: 
       - 'release/*'
+  # Triggers the workflow manually from GUI
+  workflow_dispatch:
 
 jobs:
   cicd-dbt:

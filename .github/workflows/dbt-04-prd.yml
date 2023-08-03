@@ -6,6 +6,8 @@ on:
   push:
     branches:
       - main
+  # Triggers the workflow manually from GUI
+  workflow_dispatch:
 
 jobs:
   prd-dbt:

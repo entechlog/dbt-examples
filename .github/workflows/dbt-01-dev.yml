@@ -8,7 +8,9 @@ on:
       - 'feature/*'
     paths:
       - ./dbt-docs/dbt
-      
+  # Triggers the workflow manually from GUI
+  workflow_dispatch:
+  
 jobs:
   dev-dbt:
     runs-on: ubuntu-latest
