@@ -111,7 +111,7 @@ jobs:
 
       - name: "Step 02 - Unzip artifact"
         id: step-02
-        run: 7z x ${{ github.workspace }}/docs.zip
+        run: unzip ${{ github.workspace }}/docs.zip -d docs
 
       - name: "Step 03 - Deploy to Netlify"
         id: step-03
