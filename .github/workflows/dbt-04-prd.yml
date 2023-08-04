@@ -19,8 +19,6 @@ jobs:
       PROJ_CODE: ${{vars.PROJ_CODE}}
       SNOWSQL_ACCOUNT: ${{ secrets.SNOWSQL_ACCOUNT }}
       SNOWSQL_PWD: ${{ secrets.SNOWSQL_PWD }}
-    outputs:
-      artifact_name: ${{ steps.step-08.outputs.artifact_name }}
 
     steps:
       - name: "Step 01 - Checkout current branch"
@@ -65,7 +63,7 @@ jobs:
       
       - name: "Step 07 - Zip artifact"
         id: step-07
-        run: zip dbt-docs.zip ${{ github.workspace }}/docs -r
+        run: zip -jrq dbt-docs.zip ${{ github.workspace }}/docs
 
       - name: "Step 08 - Upload artifact for deployment job"
         id: step-08
@@ -108,7 +106,7 @@ jobs:
         id: step-01
         uses: actions/download-artifact@v3
         with:
-          name: ${{ needs.build.outputs.artifact_name }}
+          name: dbt-docs
           path: ${{ github.workspace }}/docs
 
       - name: "Step 02 - Deploy to Netlify"
