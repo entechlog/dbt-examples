@@ -2,6 +2,7 @@
 - [How to Generate and Serve dbt Docs Locally](#how-to-generate-and-serve-dbt-docs-locally)
 - [Hosting Options](#hosting-options)
   - [Github Pages](#github-pages)
+  - [Netlify](#netlify)
   - [S3 and CloudFront](#s3-and-cloudfront)
   - [S3, CloudFront, and Cognito](#s3-cloudfront-and-cognito)
 - [Deployment Steps](#deployment-steps)
@@ -31,6 +32,9 @@ Here are some user-friendly hosting options for static websites like dbt docs:
 
 ## Github Pages
 The simplest and most straightforward option. It comes with no extra cost, but there's a limitation: sites hosted on Github Pages will be public in the free tier. For private access and authentication setup, an enterprise tier is required.
+
+## Netlify
+A powerful serverless platform with an intuitive git-based workflow. Netlify allows to host static websites with ease. This is simple as well but preferenced below github pages only because it sits outside github eco system.
 
 ## S3 and CloudFront
 A cost-effective option that offers the ability to add basic authentication for restricted access. S3 (Simple Storage Service) provides reliable storage for your static content, and CloudFront serves as a content delivery network for faster and more efficient distribution.
