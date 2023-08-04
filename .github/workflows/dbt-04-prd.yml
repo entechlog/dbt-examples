@@ -20,18 +20,21 @@ jobs:
       SNOWSQL_ACCOUNT: ${{ secrets.SNOWSQL_ACCOUNT }}
       SNOWSQL_PWD: ${{ secrets.SNOWSQL_PWD }}
     outputs:
-      artifact_name: ${{ steps.step-01.outputs.artifact_name }}
+      artifact_name: ${{ steps.step-08.outputs.artifact_name }}
 
     steps:
       - name: "Step 01 - Checkout current branch"
         id: step-01
         uses: actions/checkout@v3
+      
       - name: "Step 02 - Install dbt"
         id: step-02
         run: pip3 install dbt-core dbt-snowflake
+      
       - name: "Step 03 - Verify dbt"
         id: step-03
         run: dbt --version
+      
       - name: "Step 04 - Compile dbt"
         id: step-04
         working-directory: ./dbt-docs/dbt
@@ -41,6 +44,7 @@ jobs:
           dbt deps
           dbt debug -t $ENV_CODE
           dbt compile -t $ENV_CODE
+      
       - name: "Step 05 - Generate dbt docs"
         id: step-05
         working-directory: ./dbt-docs/dbt
@@ -52,11 +56,23 @@ jobs:
           mkdir ${{ github.workspace }}/docs
           cp *.json *.html graph.gpickle ${{ github.workspace }}/docs
           ls -ltra ${{ github.workspace }}/docs
+      
       - name: "Step 06 - Upload pages to artifact"
         id: step-06
         uses: actions/upload-pages-artifact@v2
         with:
           path: ${{ github.workspace }}/docs
+      
+      - name: "Step 07 - Zip artifact"
+        id: step-07
+        run: zip dbt-docs.zip ${{ github.workspace }}/docs -r
+
+      - name: "Step 08 - Upload artifact for deployment job"
+        id: step-08
+        uses: actions/upload-artifact@v3
+        with:
+          name: dbt-docs
+          path: dbt-docs.zip
 
   # Deploy to Github pages
   deploy-to-github-pages:
@@ -106,7 +122,6 @@ jobs:
           enable-pull-request-comment: true
           enable-commit-comment: false
           overwrites-pull-request-comment: true
-          deploy_url: "${{ steps.step-02.outputs.deploy-url }}"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
