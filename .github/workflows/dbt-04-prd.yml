@@ -85,6 +85,8 @@ jobs:
     # Add a dependency to the build job
     needs: build
     runs-on: ubuntu-latest
+    environment: prd
+    
     steps:
       - name: "Step 01 - Download artifact"
         id: step-01
@@ -104,6 +106,7 @@ jobs:
           enable-pull-request-comment: true
           enable-commit-comment: false
           overwrites-pull-request-comment: true
+          deploy_url: "${{ steps.step-02.outputs.deploy-url }}"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
