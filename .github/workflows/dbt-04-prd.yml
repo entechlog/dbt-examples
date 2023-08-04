@@ -51,26 +51,26 @@ jobs:
           dbt deps
           dbt docs generate -t $ENV_CODE
           cd target
-          mkdir ${{ github.workspace }}/dbt-docs
-          cp *.json *.html graph.gpickle ${{ github.workspace }}/dbt-docs
-          ls -ltra ${{ github.workspace }}/dbt-docs
+          mkdir ${{ github.workspace }}/docs
+          cp *.json *.html graph.gpickle ${{ github.workspace }}/docs
+          ls -ltra ${{ github.workspace }}/docs
       
       - name: "Step 06 - Upload pages to artifact"
         id: step-06
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ${{ github.workspace }}/dbt-docs
+          path: ${{ github.workspace }}/docs
       
       - name: "Step 07 - Zip artifact"
         id: step-07
-        run: zip -jrq dbt-docs.zip ${{ github.workspace }}/dbt-docs
+        run: zip -jrq docs.zip ${{ github.workspace }}/docs
 
       - name: "Step 08 - Upload artifact for deployment job"
         id: step-08
         uses: actions/upload-artifact@v3
         with:
-          name: dbt-docs
-          path: dbt-docs.zip
+          name: docs
+          path: docs.zip
 
   # Deploy to Github pages
   deploy-to-github-pages:
@@ -106,18 +106,18 @@ jobs:
         id: step-01
         uses: actions/download-artifact@v3
         with:
-          name: dbt-docs
+          name: docs
           path: ${{ github.workspace }}
 
       - name: "Step 02 - Unzip artifact"
         id: step-02
-        run: 7z x ${{ github.workspace }}/dbt-docs.zip
+        run: 7z x ${{ github.workspace }}/docs.zip
 
       - name: "Step 03 - Deploy to Netlify"
         id: step-03
         uses: nwtgck/actions-netlify@v2.0
         with:
-          publish-dir: ${{ github.workspace }}/dbt-docs
+          publish-dir: ${{ github.workspace }}/docs
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: "Deploy from GitHub Actions"
