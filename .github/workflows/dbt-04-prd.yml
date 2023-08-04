@@ -1,4 +1,4 @@
-name: 'dbt prd pipeline'
+name: "dbt prd pipeline"
 
 # Triggers
 on:
@@ -8,7 +8,7 @@ on:
       - main
   # Triggers the workflow manually from GUI
   workflow_dispatch:
-        
+
 jobs:
   # Build job
   build:
@@ -23,51 +23,50 @@ jobs:
       artifact_name: ${{ steps.step-01.outputs.artifact_name }}
 
     steps:
-    - name: 'Step 01 - Checkout current branch'
-      id: step-01
-      uses: actions/checkout@v3
-    - name: 'Step 02 - Install dbt'
-      id: step-02
-      run: pip3 install dbt-core dbt-snowflake
-    - name: 'Step 03 - Verify dbt'
-      id: step-03
-      run: dbt --version
-    - name: 'Step 04 - Compile dbt'
-      id: step-04
-      working-directory: ./dbt-docs/dbt
-      run:  |
-        ls -ltra
-        export DBT_PROFILES_DIR=$PWD
-        dbt deps
-        dbt debug -t $ENV_CODE
-        dbt compile -t $ENV_CODE 
-    - name: 'Step 05 - Generate dbt docs'
-      id: step-05
-      working-directory: ./dbt-docs/dbt
-      run:  | 
-        export DBT_PROFILES_DIR=$PWD
-        dbt deps
-        dbt docs generate -t $ENV_CODE
-        cd target
-        mkdir ${{ github.workspace }}/docs
-        cp *.json *.html graph.gpickle ${{ github.workspace }}/docs
-        ls -ltra ${{ github.workspace }}/docs
-    - name: 'Step 06 - Upload pages to artifact'
-      id: step-06
-      uses: actions/upload-pages-artifact@v2
-      with:
-        path: ${{ github.workspace }}/docs
+      - name: "Step 01 - Checkout current branch"
+        id: step-01
+        uses: actions/checkout@v3
+      - name: "Step 02 - Install dbt"
+        id: step-02
+        run: pip3 install dbt-core dbt-snowflake
+      - name: "Step 03 - Verify dbt"
+        id: step-03
+        run: dbt --version
+      - name: "Step 04 - Compile dbt"
+        id: step-04
+        working-directory: ./dbt-docs/dbt
+        run: |
+          ls -ltra
+          export DBT_PROFILES_DIR=$PWD
+          dbt deps
+          dbt debug -t $ENV_CODE
+          dbt compile -t $ENV_CODE
+      - name: "Step 05 - Generate dbt docs"
+        id: step-05
+        working-directory: ./dbt-docs/dbt
+        run: |
+          export DBT_PROFILES_DIR=$PWD
+          dbt deps
+          dbt docs generate -t $ENV_CODE
+          cd target
+          mkdir ${{ github.workspace }}/docs
+          cp *.json *.html graph.gpickle ${{ github.workspace }}/docs
+          ls -ltra ${{ github.workspace }}/docs
+      - name: "Step 06 - Upload pages to artifact"
+        id: step-06
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ${{ github.workspace }}/docs
 
-# Deploy to Github pages
+  # Deploy to Github pages
   deploy-to-github-pages:
-
     # Add a dependency to the build job
     needs: build
 
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
 
     # Deploy to the github-pages environment
     environment:
@@ -81,23 +80,31 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action
 
-# Deploy to Netlify
+  # Deploy to Netlify
   deploy-to-netlify:
-
     # Add a dependency to the build job
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: 'Step 01 - Download artifact'
+      - name: "Step 01 - Download artifact"
+        id: step-01
         uses: actions/download-artifact@v3
         with:
           name: ${{ needs.build.outputs.artifact_name }}
           path: ${{ github.workspace }}/docs
 
-      - name: 'Step 02 - Deploy to Netlify'
-        uses: netlify/actions/cli@master
+      - name: "Step 02 - Deploy to Netlify"
+        id: step-02
+        uses: nwtgck/actions-netlify@v2.0
+        with:
+          publish-dir: ${{ github.workspace }}/docs
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: true
+          enable-commit-comment: false
+          overwrites-pull-request-comment: true
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        with:
-          args: deploy --dir=${{ github.workspace }}/docs --prod
+        timeout-minutes: 1
