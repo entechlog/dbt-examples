@@ -14,6 +14,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: prd
+    env:
+      ENV_CODE: ${{vars.ENV_CODE}}
+      PROJ_CODE: ${{vars.PROJ_CODE}}
+      SNOWSQL_ACCOUNT: ${{ secrets.SNOWSQL_ACCOUNT }}
+      SNOWSQL_PWD: ${{ secrets.SNOWSQL_PWD }}
 
     steps:
       - name: "Step 01 - Checkout current branch"
@@ -35,8 +40,8 @@ jobs:
           ls -ltra
           export DBT_PROFILES_DIR=$PWD
           dbt deps
-          dbt debug -t ${{ vars.ENV_CODE }}
-          dbt compile -t ${{ vars.ENV_CODE }}
+          dbt debug -t $ENV_CODE
+          dbt compile -t $ENV_CODE
       
       - name: "Step 05 - Generate dbt docs"
         id: step-05
@@ -44,7 +49,7 @@ jobs:
         run: |
           export DBT_PROFILES_DIR=$PWD
           dbt deps
-          dbt docs generate -t ${{ vars.ENV_CODE }}
+          dbt docs generate -t $ENV_CODE
           cd target
           mkdir ${{ github.workspace }}/docs
           cp *.json *.html graph.gpickle ${{ github.workspace }}/docs
