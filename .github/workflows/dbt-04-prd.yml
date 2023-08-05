@@ -117,17 +117,19 @@ jobs:
         id: step-03
         uses: nwtgck/actions-netlify@v2.0
         with:
-          publish-dir: ${{ github.workspace }}/docs
           production-branch: main
+          publish-dir: ${{ github.workspace }}/docs
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: "Deploy from GitHub Actions"
           enable-pull-request-comment: true
           enable-commit-comment: false
           overwrites-pull-request-comment: true
+          github-deployment-environment: prd
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         timeout-minutes: 1
+      - run: "echo 'outputs.deploy-url: ${{ steps.step-03.outputs.deploy-url }}'"
 
   # Deploy to S3
   deploy-to-s3:
