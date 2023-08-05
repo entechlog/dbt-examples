@@ -35,7 +35,7 @@ variable "aws_region" {
 }
 
 # boolean variable
-variable "use_env_code" {
+variable "use_env_code_flag" {
   type        = bool
   description = "toggle on/off the env code in the resource names"
   default     = true

@@ -66,14 +66,20 @@ resource "aws_cloudfront_distribution" "app" {
       }
     }
 
-    function_association {
-      event_type   = "viewer-request"
-      function_arn = aws_cloudfront_function.app.arn
+    dynamic "function_association" {
+      for_each = var.enable_auth_flag == true ? toset([1]) : toset([])
+      content {
+        event_type   = "viewer-request"
+        function_arn = aws_cloudfront_function.app[0].arn
+      }
     }
   }
 }
 
 resource "aws_cloudfront_function" "app" {
+
+  count = "${var.enable_auth_flag}" == true ? 1 : 0
+
   name    = "BasicAuthFn"
   comment = "Add HTTP Basic authentication to CloudFront"
   runtime = "cloudfront-js-1.0"

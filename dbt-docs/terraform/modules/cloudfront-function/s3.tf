@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "s3_read_only_access" {
 
 # Create an S3 bucket
 resource "aws_s3_bucket" "app" {
-  bucket        = "${local.resource_name_prefix}"
+  bucket        = local.resource_name_prefix
   force_destroy = true
 }
 

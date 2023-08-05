@@ -14,11 +14,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: prd
-    env:
-      ENV_CODE: ${{vars.ENV_CODE}}
-      PROJ_CODE: ${{vars.PROJ_CODE}}
-      SNOWSQL_ACCOUNT: ${{ secrets.SNOWSQL_ACCOUNT }}
-      SNOWSQL_PWD: ${{ secrets.SNOWSQL_PWD }}
 
     steps:
       - name: "Step 01 - Checkout current branch"
@@ -40,8 +35,8 @@ jobs:
           ls -ltra
           export DBT_PROFILES_DIR=$PWD
           dbt deps
-          dbt debug -t $ENV_CODE
-          dbt compile -t $ENV_CODE
+          dbt debug -t ${{ vars.ENV_CODE }}
+          dbt compile -t ${{ vars.ENV_CODE }}
       
       - name: "Step 05 - Generate dbt docs"
         id: step-05
@@ -49,7 +44,7 @@ jobs:
         run: |
           export DBT_PROFILES_DIR=$PWD
           dbt deps
-          dbt docs generate -t $ENV_CODE
+          dbt docs generate -t ${{ vars.ENV_CODE }}
           cd target
           mkdir ${{ github.workspace }}/docs
           cp *.json *.html graph.gpickle ${{ github.workspace }}/docs
@@ -128,3 +123,34 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         timeout-minutes: 1
+
+  # Deploy to Netlify
+  deploy-to-s3:
+    # Add a dependency to the build job
+    needs: build
+    runs-on: ubuntu-latest
+    environment: prd
+    
+    steps:
+      - name: "Step 01 - Download artifact"
+        id: step-01
+        uses: actions/download-artifact@v3
+        with:
+          name: docs
+          path: ${{ github.workspace }}
+
+      - name: "Step 02 - Unzip artifact"
+        id: step-02
+        run: unzip ${{ github.workspace }}/docs.zip -d docs
+
+      - name: "Step 03 - Setup AWS CLI"
+        id: step-03
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
+
+      - name: "Step 04 - Sync files to S3 bucket"
+        run: |
+          aws s3 sync ${{ github.workspace }}/docs ${{ vars.AWS_S3_BUCKET_DBT_DOCS }} --delete

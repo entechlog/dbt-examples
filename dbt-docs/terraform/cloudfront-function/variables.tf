@@ -36,7 +36,7 @@ variable "aws_region" {
 }
 
 # boolean variable
-variable "use_env_code" {
+variable "use_env_code_flag" {
   type        = bool
   description = "toggle on/off the env code in the resource names"
   default     = true
@@ -47,6 +47,12 @@ variable "use_env_code" {
 ## These variables are expected to be passed in by the operator
 ## Example : required_var
 ## ---------------------------------------------------------------------------------------------------------------------
+
+variable "enable_auth_flag" {
+  type        = bool
+  description = "Toggle on/off the HTTP Basic Auth"
+  default     = true
+}
 
 variable "base64_user_pass" {
   description = "Base64 encoded username and password for HTTP Basic Auth"
