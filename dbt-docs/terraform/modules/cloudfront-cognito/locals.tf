@@ -1,6 +1,6 @@
 locals {
   account_id           = data.aws_caller_identity.current.account_id
-  resource_name_prefix = var.use_env_code == true ? "${lower(var.env_code)}-${lower(var.project_code)}-${lower(var.app_code)}" : "${lower(var.project_code)}-${lower(var.app_code)}"
+  resource_name_prefix = var.use_env_code_flag == true ? "${lower(var.env_code)}-${lower(var.project_code)}-${lower(var.app_code)}" : "${lower(var.project_code)}-${lower(var.app_code)}"
 
   aws_cloudfront_distribution__domain_name = var.aws_cloudfront_distribution__domain_name == null ? "example.com/signin" : var.aws_cloudfront_distribution__domain_name
 
