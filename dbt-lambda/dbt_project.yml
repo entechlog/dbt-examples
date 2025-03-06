@@ -1,0 +1,43 @@
+name: 'dbt_lambda_demo'
+version: '1.0.0'
+config-version: 2
+
+profile: 'dbt-snowflake'
+
+vars:
+  run_type: "daily"
+  batch_cycle_date: '2024-01-01'
+
+source-paths: ["models"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+
+models:
+  dbt_lambda_demo:
+    +materialized: table
+    prep:
+      dim:
+        database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_PREP_DB"
+        schema: DIM
+        materialized: view
+      fact:
+        database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_PREP_DB"
+        schema: FACT
+        materialized: view
+    dw:
+      dim:
+        database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DW_DB"
+        schema: DIM
+        materialized: view
+      fact:
+        database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DW_DB"
+        schema: FACT
+        materialized: view
+    obt:
+      database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_DW_DB"
+      schema: OBT
+
+seeds:
+  dbt_lambda_demo:
+    database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim }}_PREP_DB"
+    schema: SEED

@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: seed
+    tables:
+      - name: purchases
+        columns:
+          - name: purchase_id
+            tests:
+              - unique
+              - not_null
