@@ -1,8 +1,6 @@
 locals {
   account_id = data.aws_caller_identity.current.account_id
 
-  resource_name_prefix = var.use_env_code_flag ? "${lower(var.env_code)}-${lower(var.project_code)}-${lower(var.app_code)}" : "${lower(var.project_code)}-${lower(var.app_code)}"
-
   # Hard-coded directories for Lambda code
   sso_authenticator_dir = "../uploads/lambda/sso_authenticator"
   sso_callback_dir      = "../uploads/lambda/sso_callback"

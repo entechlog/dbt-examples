@@ -8,7 +8,7 @@ data "aws_iam_policy_document" "lambda_edge_assume_role" {
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
     principals {
-      type        = "Service"
+      type = "Service"
       identifiers = [
         "lambda.amazonaws.com",
         "edgelambda.amazonaws.com"
@@ -50,7 +50,7 @@ data "aws_iam_policy_document" "lambda_edge_secrets_access" {
 ###############################
 
 resource "aws_iam_role" "lambda_edge" {
-  name               = "${local.resource_name_prefix}-lambda-edge-role"
+  name               = "${lower(var.name_prefix)}-${var.app_code}-lambda-edge-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_edge_assume_role.json
 }
 
@@ -68,7 +68,7 @@ resource "aws_iam_role_policy_attachment" "lambda_edge_logs" {
 ###############################
 
 resource "aws_iam_role_policy" "lambda_edge_secrets_access" {
-  name   = "${local.resource_name_prefix}-edge-secrets-policy"
+  name   = "${lower(var.name_prefix)}-${var.app_code}-edge-secrets-policy"
   role   = aws_iam_role.lambda_edge.id
   policy = data.aws_iam_policy_document.lambda_edge_secrets_access.json
 }

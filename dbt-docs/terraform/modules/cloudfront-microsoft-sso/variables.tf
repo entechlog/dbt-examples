@@ -1,31 +1,12 @@
-variable "env_code" {
+variable "name_prefix" {
   type        = string
-  description = "Environmental code to identify the target environment"
-  default     = "dev"
-}
-
-variable "project_code" {
-  type        = string
-  description = "Project code used as prefix for resource names"
-  default     = "entechlog"
+  description = "Resource name prefix"
 }
 
 variable "app_code" {
   type        = string
   description = "Application code used as prefix for resource names"
   default     = "dbt-docs"
-}
-
-variable "aws_region" {
-  type        = string
-  description = "Primary region for AWS resources"
-  default     = "us-east-1"
-}
-
-variable "use_env_code_flag" {
-  type        = bool
-  description = "Toggle on/off env code in resource names"
-  default     = true
 }
 
 variable "enable_auth_flag" {

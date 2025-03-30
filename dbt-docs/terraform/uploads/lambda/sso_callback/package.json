@@ -1,0 +1,16 @@
+{
+  "name": "sso-callback",
+  "version": "1.0.0",
+  "description": "SSO Callback Handler Lambda@Edge",
+  "main": "callback-handler.js",
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.350.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {}
+}

@@ -14,7 +14,7 @@ data "aws_iam_policy_document" "s3_read_only_access" {
 }
 
 resource "aws_s3_bucket" "app" {
-  bucket        = local.resource_name_prefix
+  bucket        = "${var.name_prefix}-${var.app_code}"
   force_destroy = true
 }
 

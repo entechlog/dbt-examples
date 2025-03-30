@@ -594,3 +594,7 @@ payload.zip
 *.cert
 *.key
 *.ovpn
+
+# NPM
+package-lock.json
+.node_install*
