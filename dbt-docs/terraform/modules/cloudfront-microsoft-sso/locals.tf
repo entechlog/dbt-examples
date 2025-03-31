@@ -7,8 +7,8 @@ locals {
 
   # Create unique temporary directories for each module instance
   instance_id            = sha256("${var.name_prefix}-${var.app_code}")
-  temp_authenticator_dir = "/tmp/${local.instance_id}/authenticator"
-  temp_callback_dir      = "/tmp/${local.instance_id}/callback"
+  temp_authenticator_dir = "${path.module}/temp/lambda/${local.instance_id}/authenticator"
+  temp_callback_dir      = "${path.module}/temp/lambda/${local.instance_id}/callback"
 
   # file extensions to mime types mapping
   mime_type_mappings = {

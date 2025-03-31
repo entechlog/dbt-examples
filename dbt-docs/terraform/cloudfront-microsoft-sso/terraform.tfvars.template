@@ -7,5 +7,6 @@ dbt_sso_tenant_id     = ""
 dbt_sso_client_id     = ""
 dbt_sso_client_secret = ""
 dbt_sso_redirect_uri  = ""
+elementary_sso_redirect_uri = ""
 
 lambda_runtime = "nodejs18.x"

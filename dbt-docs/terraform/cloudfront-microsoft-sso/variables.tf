@@ -43,3 +43,8 @@ variable "dbt_sso_redirect_uri" {
   type        = string
   description = "Redirect URI for the SSO flow"
 }
+
+variable "elementary_sso_redirect_uri" {
+  type        = string
+  description = "Redirect URI for the SSO flow"
+}

@@ -1,4 +1,5 @@
 locals {
+  # Track code changes in .js/.json
   sso_authenticator_files = fileset(local.sso_authenticator_dir, "*.{js,json}")
   sso_authenticator_sha = sha256(join(",", [
     for file in local.sso_authenticator_files : filesha256("${local.sso_authenticator_dir}/${file}")
@@ -16,141 +17,51 @@ locals {
 
   # Then extract just the base name (everything before the last hyphen and random characters)
   secret_name = join("-", slice(split("-", local.full_secret_part), 0, length(split("-", local.full_secret_part)) - 1))
-
-  # Create minimal lambda handlers to ensure the archives are never empty
-  minimal_authenticator_code = <<-EOT
-    exports.handler = async (event) => {
-      console.log('Authenticator handler called');
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ message: "Default handler - not properly configured" })
-      };
-    };
-  EOT
-
-  minimal_callback_code = <<-EOT
-    exports.handler = async (event) => {
-      console.log('Callback handler called');
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ message: "Default handler - not properly configured" })
-      };
-    };
-  EOT
 }
 
-# Directly create the authenticator.js file to ensure it exists
-resource "local_file" "authenticator_js" {
-  filename = "${local.temp_authenticator_dir}/authenticator.js"
-  content  = local.minimal_authenticator_code
-  
-  # Create the directory if it doesn't exist
-  provisioner "local-exec" {
-    command = "mkdir -p ${dirname(self.filename)}"
-  }
-}
-
-# Directly create the callback-handler.js file to ensure it exists
-resource "local_file" "callback_handler_js" {
-  filename = "${local.temp_callback_dir}/callback-handler.js"
-  content  = local.minimal_callback_code
-  
-  # Create the directory if it doesn't exist
-  provisioner "local-exec" {
-    command = "mkdir -p ${dirname(self.filename)}"
+# Track changes to trigger rebuilds only when necessary
+resource "null_resource" "prepare_triggers" {
+  triggers = {
+    authenticator_dir_sha = local.sso_authenticator_sha
+    callback_dir_sha      = local.sso_callback_sha
+    secret_name           = local.secret_name
   }
 }
 
 # Prepare authenticator code in temporary directory
 resource "null_resource" "prepare_authenticator" {
-  triggers = {
-    authenticator_dir     = local.sso_authenticator_dir
-    authenticator_dir_sha = local.sso_authenticator_sha
-    secret_name           = local.secret_name
-  }
+#  depends_on = [null_resource.prepare_triggers]
 
+  # Use single-line command to avoid line ending issues
   provisioner "local-exec" {
-    command = <<-EOT
-      echo "Preparing authenticator files..."
-      
-      # Check if source directory exists and has files
-      if [ -d "${local.sso_authenticator_dir}" ] && [ "$(ls -A ${local.sso_authenticator_dir})" ]; then
-        echo "Copying from ${local.sso_authenticator_dir}"
-        cp -f ${local.sso_authenticator_dir}/*.js ${local.temp_authenticator_dir}/ 2>/dev/null || true
-        cp -f ${local.sso_authenticator_dir}/*.json ${local.temp_authenticator_dir}/ 2>/dev/null || true
-        
-        # If authenticator.js exists, update the SECRET_NAME
-        if [ -f "${local.temp_authenticator_dir}/authenticator.js" ]; then
-          sed -i 's/const SECRET_NAME = "SECRET-NAME-PLACEHOLDER";/const SECRET_NAME = "${local.secret_name}";/g' ${local.temp_authenticator_dir}/authenticator.js
-          echo "Updated SECRET_NAME in authenticator.js"
-        fi
-      else
-        echo "WARNING: Source directory ${local.sso_authenticator_dir} does not exist or is empty"
-      fi
-      
-      # Verify files were copied
-      echo "Files in destination directory:"
-      ls -la ${local.temp_authenticator_dir}/
-    EOT
+    interpreter = ["/bin/bash", "-c"]
+    command     = "mkdir -p ${local.temp_authenticator_dir} && cp -r ${local.sso_authenticator_dir}/* ${local.temp_authenticator_dir}/ && sed -i 's/const SECRET_NAME = \"SECRET-NAME-PLACEHOLDER\";/const SECRET_NAME = \"${local.secret_name}\";/g' ${local.temp_authenticator_dir}/authenticator.js"
   }
-
-  depends_on = [local_file.authenticator_js]
 }
 
 # Prepare callback code in temporary directory
 resource "null_resource" "prepare_callback" {
-  triggers = {
-    callback_dir     = local.sso_callback_dir
-    callback_dir_sha = local.sso_callback_sha
-    secret_name      = local.secret_name
-  }
+#  depends_on = [null_resource.prepare_triggers]
 
+  # Use single-line command to avoid line ending issues
   provisioner "local-exec" {
-    command = <<-EOT
-      echo "Preparing callback files..."
-      
-      # Check if source directory exists and has files
-      if [ -d "${local.sso_callback_dir}" ] && [ "$(ls -A ${local.sso_callback_dir})" ]; then
-        echo "Copying from ${local.sso_callback_dir}"
-        cp -f ${local.sso_callback_dir}/*.js ${local.temp_callback_dir}/ 2>/dev/null || true
-        cp -f ${local.sso_callback_dir}/*.json ${local.temp_callback_dir}/ 2>/dev/null || true
-        
-        # If callback-handler.js exists, update the SECRET_NAME
-        if [ -f "${local.temp_callback_dir}/callback-handler.js" ]; then
-          sed -i 's/const SECRET_NAME = "SECRET-NAME-PLACEHOLDER";/const SECRET_NAME = "${local.secret_name}";/g' ${local.temp_callback_dir}/callback-handler.js
-          echo "Updated SECRET_NAME in callback-handler.js"
-        fi
-      else
-        echo "WARNING: Source directory ${local.sso_callback_dir} does not exist or is empty"
-      fi
-      
-      # Verify files were copied
-      echo "Files in destination directory:"
-      ls -la ${local.temp_callback_dir}/
-    EOT
+    interpreter = ["/bin/bash", "-c"]
+    command     = "mkdir -p ${local.temp_callback_dir} && cp -r ${local.sso_callback_dir}/* ${local.temp_callback_dir}/ && sed -i 's/const SECRET_NAME = \"SECRET-NAME-PLACEHOLDER\";/const SECRET_NAME = \"${local.secret_name}\";/g' ${local.temp_callback_dir}/callback-handler.js"
   }
-
-  depends_on = [local_file.callback_handler_js]
 }
 
-# Ensure tmp/artifacts directory exists
-resource "null_resource" "ensure_artifacts_dir" {
-  provisioner "local-exec" {
-    command = "mkdir -p tmp/artifacts"
-  }
-}
+###############################
+# Package & deploy SSO Authenticator
+###############################
 
 data "archive_file" "sso_authenticator" {
   type             = "zip"
-  source_dir       = local.temp_authenticator_dir
-  output_path      = "tmp/artifacts/${local.instance_id}-authenticator.zip"
+  source_dir       = "${local.temp_authenticator_dir}"
+  output_path      = "${local.temp_authenticator_dir}/payload.zip"
+  excludes         = ["payload.zip"]
   output_file_mode = "0666"
 
-  depends_on = [
-    local_file.authenticator_js,
-    null_resource.prepare_authenticator,
-    null_resource.ensure_artifacts_dir
-  ]
+  depends_on = [null_resource.prepare_triggers, null_resource.prepare_authenticator]
 }
 
 resource "aws_lambda_function" "sso_authenticator" {
@@ -163,17 +74,18 @@ resource "aws_lambda_function" "sso_authenticator" {
   publish          = true
 }
 
+###############################
+# Package & deploy SSO Callback
+###############################
+
 data "archive_file" "sso_callback" {
   type             = "zip"
-  source_dir       = local.temp_callback_dir
-  output_path      = "tmp/artifacts/${local.instance_id}-callback.zip"
+  source_dir       = "${local.temp_callback_dir}"
+  output_path      = "${local.temp_callback_dir}/payload.zip"
+  excludes         = ["payload.zip"]
   output_file_mode = "0666"
 
-  depends_on = [
-    local_file.callback_handler_js,
-    null_resource.prepare_callback,
-    null_resource.ensure_artifacts_dir
-  ]
+  depends_on = [null_resource.prepare_triggers, null_resource.prepare_callback]
 }
 
 resource "aws_lambda_function" "sso_callback" {
