@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 520">
+  <!-- Styles -->
+  <style>
+    .actor { fill: #f5f5f5; stroke: #666; stroke-width: 2; }
+    .actor-line { stroke: #ccc; stroke-width: 1; }
+    .actor-text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+    .lifeline { stroke: #ccc; stroke-width: 1; stroke-dasharray: 5, 5; }
+    .message { stroke: #000; stroke-width: 1.5; marker-end: url(#arrowhead); fill: none; }
+    .step { font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; fill: white; text-anchor: middle; }
+    .step-circle { fill: #666; }
+    .message-text { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+    .header-text { font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; text-anchor: middle; }
+  </style>
+
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#000" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="550" y="30" class="header-text">Microsoft Entra ID Authentication Flow with CloudFront</text>
+
+  <!-- Actors -->
+  <rect x="50" y="60" width="100" height="40" class="actor" rx="3" ry="3" />
+  <text x="100" y="85" class="actor-text">User</text>
+  <line x1="100" y1="100" x2="100" y2="480" class="actor-line" />
+
+  <rect x="300" y="60" width="100" height="40" class="actor" rx="3" ry="3" />
+  <text x="350" y="85" class="actor-text">CloudFront</text>
+  <line x1="350" y1="100" x2="350" y2="480" class="actor-line" />
+
+  <rect x="550" y="60" width="100" height="40" class="actor" rx="3" ry="3" />
+  <text x="600" y="85" class="actor-text">Auth Lambda</text>
+  <line x1="600" y1="100" x2="600" y2="480" class="actor-line" />
+
+  <rect x="800" y="60" width="100" height="40" class="actor" rx="3" ry="3" />
+  <text x="850" y="85" class="actor-text">Microsoft</text>
+  <text x="850" y="100" class="actor-text">Entra ID</text>
+  <line x1="850" y1="100" x2="850" y2="480" class="actor-line" />
+
+  <rect x="1000" y="60" width="100" height="40" class="actor" rx="3" ry="3" />
+  <text x="1050" y="85" class="actor-text">Callback</text>
+  <text x="1050" y="100" class="actor-text">Lambda</text>
+  <line x1="1050" y1="100" x2="1050" y2="480" class="actor-line" />
+
+  <!-- Step 1: Request content -->
+  <circle cx="150" cy="140" r="15" class="step-circle" />
+  <text x="150" y="145" class="step">1</text>
+  <path d="M100 140 L350 140" class="message" />
+  <text x="225" y="130" class="message-text">Request content</text>
+
+  <!-- Step 2: CloudFront invokes Auth Lambda -->
+  <circle cx="470" cy="180" r="15" class="step-circle" />
+  <text x="470" y="185" class="step">2</text>
+  <path d="M350 180 L600 180" class="message" />
+  <text x="475" y="170" class="message-text">Check authentication</text>
+
+  <!-- Step 3: Redirect to login if not authenticated -->
+  <circle cx="710" cy="220" r="15" class="step-circle" />
+  <text x="710" y="225" class="step">3</text>
+  <path d="M600 220 L850 220" class="message" />
+  <text x="725" y="210" class="message-text">Redirect to login (if no valid session)</text>
+
+  <!-- Step 4: User authenticates -->
+  <circle cx="470" cy="260" r="15" class="step-circle" />
+  <text x="470" y="265" class="step">4</text>
+  <path d="M100 260 L850 260" class="message" />
+  <text x="475" y="250" class="message-text">Authenticate and consent</text>
+
+  <!-- Step 5: Return auth code -->
+  <circle cx="950" cy="300" r="15" class="step-circle" />
+  <text x="950" y="305" class="step">5</text>
+  <path d="M850 300 L1050 300" class="message" />
+  <text x="950" y="290" class="message-text">Return authorization code</text>
+
+  <!-- Step 6: Exchange code for token -->
+  <circle cx="950" cy="340" r="15" class="step-circle" />
+  <text x="950" y="345" class="step">6</text>
+  <path d="M1050 340 L850 340" class="message" />
+  <text x="950" y="330" class="message-text">Exchange code for token</text>
+
+  <!-- Step 7: Return access and ID tokens -->
+  <circle cx="950" cy="380" r="15" class="step-circle" />
+  <text x="950" y="385" class="step">7</text>
+  <path d="M850 380 L1050 380" class="message" />
+  <text x="950" y="370" class="message-text">Return tokens</text>
+
+  <!-- Step 8: Set cookie and redirect -->
+  <circle cx="700" cy="420" r="15" class="step-circle" />
+  <text x="700" y="425" class="step">8</text>
+  <path d="M1050 420 L350 420" class="message" />
+  <text x="700" y="410" class="message-text">Set auth cookie and redirect to original URL</text>
+
+  <!-- Step 9: Deliver content -->
+  <circle cx="225" cy="460" r="15" class="step-circle" />
+  <text x="225" y="465" class="step">9</text>
+  <path d="M350 460 L100 460" class="message" />
+  <text x="225" y="450" class="message-text">Deliver protected content</text>
+
+  <!-- Actor boxes at bottom -->
+  <rect x="50" y="480" width="100" height="40" class="actor" rx="3" ry="3" />
+  <text x="100" y="505" class="actor-text">User</text>
+
+  <rect x="300" y="480" width="100" height="40" class="actor" rx="3" ry="3" />
+  <text x="350" y="505" class="actor-text">CloudFront</text>
+
+  <rect x="550" y="480" width="100" height="40" class="actor" rx="3" ry="3" />
+  <text x="600" y="505" class="actor-text">Auth Lambda</text>
+
+  <rect x="800" y="480" width="100" height="40" class="actor" rx="3" ry="3" />
+  <text x="850" y="505" class="actor-text">Microsoft</text>
+  <text x="850" y="520" class="actor-text">Entra ID</text>
+
+  <rect x="1000" y="480" width="100" height="40" class="actor" rx="3" ry="3" />
+  <text x="1050" y="505" class="actor-text">Callback</text>
+  <text x="1050" y="520" class="actor-text">Lambda</text>
+</svg>

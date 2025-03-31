@@ -5,6 +5,11 @@ locals {
   sso_authenticator_dir = "../uploads/lambda/sso_authenticator"
   sso_callback_dir      = "../uploads/lambda/sso_callback"
 
+  # Create unique temporary directories for each module instance
+  instance_id            = sha256("${var.name_prefix}-${var.app_code}")
+  temp_authenticator_dir = "/tmp/${local.instance_id}/authenticator"
+  temp_callback_dir      = "/tmp/${local.instance_id}/callback"
+
   # file extensions to mime types mapping
   mime_type_mappings = {
     ".html" = "text/html"

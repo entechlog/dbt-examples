@@ -598,3 +598,5 @@ payload.zip
 # NPM
 package-lock.json
 .node_install*
+temp/
+artifacts/

@@ -34,7 +34,8 @@ data "aws_iam_policy_document" "lambda_edge_secrets_access" {
     ]
     resources = [
       # Secrets in the same account/region
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*",
+      # "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*",
+      var.sso_config_arn,
 
       # CloudWatch log groups for Lambda
       "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*",

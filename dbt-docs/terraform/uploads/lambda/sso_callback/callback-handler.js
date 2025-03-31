@@ -5,7 +5,7 @@ const querystring = require('querystring');
 const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
 
 // Constants
-const SECRET_NAME = "dbt-sso-secret";
+const SECRET_NAME = "SECRET-NAME-PLACEHOLDER";
 const REGION = "us-east-1";
 const COOKIE_NAME = "session_token";
 const COOKIE_MAX_AGE = 3600; // 1 hour
@@ -176,3 +176,4 @@ exports.handler = async (event) => {
     };
   }
 };
+
