@@ -19,34 +19,49 @@ locals {
   secret_name = join("-", slice(split("-", local.full_secret_part), 0, length(split("-", local.full_secret_part)) - 1))
 }
 
-# Track changes to trigger rebuilds only when necessary
-resource "null_resource" "prepare_triggers" {
-  triggers = {
-    authenticator_dir_sha = local.sso_authenticator_sha
-    callback_dir_sha      = local.sso_callback_sha
-    secret_name           = local.secret_name
-  }
-}
-
-# Prepare authenticator code in temporary directory
+# Prepare authenticator code in temporary directory - always runs
 resource "null_resource" "prepare_authenticator" {
-#  depends_on = [null_resource.prepare_triggers]
+  # Using triggers that change every time ensures this always runs
+  triggers = {
+    always_run = timestamp()
+  }
 
-  # Use single-line command to avoid line ending issues
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
-    command     = "mkdir -p ${local.temp_authenticator_dir} && cp -r ${local.sso_authenticator_dir}/* ${local.temp_authenticator_dir}/ && sed -i 's/const SECRET_NAME = \"SECRET-NAME-PLACEHOLDER\";/const SECRET_NAME = \"${local.secret_name}\";/g' ${local.temp_authenticator_dir}/authenticator.js"
+    command     = "rm -rf ${local.temp_authenticator_dir} && mkdir -p ${local.temp_authenticator_dir} && cp -r ${local.sso_authenticator_dir}/* ${local.temp_authenticator_dir}/ && sed -i 's/const SECRET_NAME = \"SECRET-NAME-PLACEHOLDER\";/const SECRET_NAME = \"${local.secret_name}\";/g' ${local.temp_authenticator_dir}/authenticator.js"
   }
 }
 
-# Prepare callback code in temporary directory
+# Prepare callback code in temporary directory - always runs
 resource "null_resource" "prepare_callback" {
-#  depends_on = [null_resource.prepare_triggers]
+  # Using triggers that change every time ensures this always runs
+  triggers = {
+    always_run = timestamp()
+  }
 
-  # Use single-line command to avoid line ending issues
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
-    command     = "mkdir -p ${local.temp_callback_dir} && cp -r ${local.sso_callback_dir}/* ${local.temp_callback_dir}/ && sed -i 's/const SECRET_NAME = \"SECRET-NAME-PLACEHOLDER\";/const SECRET_NAME = \"${local.secret_name}\";/g' ${local.temp_callback_dir}/callback-handler.js"
+    command     = "rm -rf ${local.temp_callback_dir} && mkdir -p ${local.temp_callback_dir} && cp -r ${local.sso_callback_dir}/* ${local.temp_callback_dir}/ && sed -i 's/const SECRET_NAME = \"SECRET-NAME-PLACEHOLDER\";/const SECRET_NAME = \"${local.secret_name}\";/g' ${local.temp_callback_dir}/callback-handler.js"
+  }
+}
+
+# Create explicit dependency for authenticator
+resource "terraform_data" "wait_for_authenticator" {
+  depends_on = [null_resource.prepare_authenticator]
+  
+  input = {
+    source_id = null_resource.prepare_authenticator.id
+    source_dir = local.temp_authenticator_dir
+  }
+}
+
+# Create explicit dependency for callback
+resource "terraform_data" "wait_for_callback" {
+  depends_on = [null_resource.prepare_callback]
+  
+  input = {
+    source_id = null_resource.prepare_callback.id
+    source_dir = local.temp_callback_dir
   }
 }
 
@@ -56,12 +71,10 @@ resource "null_resource" "prepare_callback" {
 
 data "archive_file" "sso_authenticator" {
   type             = "zip"
-  source_dir       = "${local.temp_authenticator_dir}"
+  source_dir       = terraform_data.wait_for_authenticator.input.source_dir
   output_path      = "${local.temp_authenticator_dir}/payload.zip"
   excludes         = ["payload.zip"]
   output_file_mode = "0666"
-
-  depends_on = [null_resource.prepare_triggers, null_resource.prepare_authenticator]
 }
 
 resource "aws_lambda_function" "sso_authenticator" {
@@ -80,12 +93,10 @@ resource "aws_lambda_function" "sso_authenticator" {
 
 data "archive_file" "sso_callback" {
   type             = "zip"
-  source_dir       = "${local.temp_callback_dir}"
+  source_dir       = terraform_data.wait_for_callback.input.source_dir
   output_path      = "${local.temp_callback_dir}/payload.zip"
   excludes         = ["payload.zip"]
   output_file_mode = "0666"
-
-  depends_on = [null_resource.prepare_triggers, null_resource.prepare_callback]
 }
 
 resource "aws_lambda_function" "sso_callback" {
