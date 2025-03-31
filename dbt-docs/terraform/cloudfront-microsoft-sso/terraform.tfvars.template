@@ -1,0 +1,12 @@
+env_code          = "dev"
+project_code      = "entechlog"
+aws_region        = "us-east-1"
+use_env_code_flag = true
+
+dbt_sso_tenant_id     = ""
+dbt_sso_client_id     = ""
+dbt_sso_client_secret = ""
+dbt_sso_redirect_uri  = ""
+elementary_sso_redirect_uri = ""
+
+lambda_runtime = "nodejs18.x"
