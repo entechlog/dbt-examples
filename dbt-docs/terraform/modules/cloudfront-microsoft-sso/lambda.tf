@@ -27,7 +27,8 @@ resource "null_resource" "prepare_authenticator" {
   }
 
   provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
+    # Don't specify interpreter, let Terraform use the default shell
+    # interpreter = ["/bin/bash", "-c"]
     command     = "rm -rf ${local.temp_authenticator_dir} && mkdir -p ${local.temp_authenticator_dir} && cp -r ${local.sso_authenticator_dir}/* ${local.temp_authenticator_dir}/ && sed -i 's/const SECRET_NAME = \"SECRET-NAME-PLACEHOLDER\";/const SECRET_NAME = \"${local.secret_name}\";/g' ${local.temp_authenticator_dir}/authenticator.js"
   }
 }
@@ -40,7 +41,8 @@ resource "null_resource" "prepare_callback" {
   }
 
   provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
+    # Don't specify interpreter, let Terraform use the default shell
+    # interpreter = ["/bin/bash", "-c"]
     command     = "rm -rf ${local.temp_callback_dir} && mkdir -p ${local.temp_callback_dir} && cp -r ${local.sso_callback_dir}/* ${local.temp_callback_dir}/ && sed -i 's/const SECRET_NAME = \"SECRET-NAME-PLACEHOLDER\";/const SECRET_NAME = \"${local.secret_name}\";/g' ${local.temp_callback_dir}/callback-handler.js"
   }
 }
