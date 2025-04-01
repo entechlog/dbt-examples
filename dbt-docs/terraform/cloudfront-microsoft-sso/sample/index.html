@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Entra ID SSO Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #0078D4;
+            border-bottom: 2px solid #0078D4;
+            padding-bottom: 10px;
+        }
+        .card {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success {
+            background-color: #e6f7e6;
+            border-left: 4px solid #28a745;
+        }
+        .info {
+            background-color: #e6f3ff;
+            border-left: 4px solid #0078D4;
+        }
+        code {
+            background-color: #f1f1f1;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Microsoft Entra ID SSO Test Page</h1>
+    
+    <div class="card success">
+        <h2>Authentication Successful!</h2>
+        <p>If you can see this page, your SSO authentication is working correctly.</p>
+    </div>
+    
+    <div class="card info">
+        <h2>Session Information</h2>
+        <p>Your session is secured by Microsoft Entra ID (formerly Azure AD).</p>
+        <p>The authentication is handled via Lambda@Edge functions that validate your session token.</p>
+    </div>
+    
+    <div class="card">
+        <h2>How It Works</h2>
+        <p>This page is protected by:</p>
+        <ul>
+            <li>CloudFront distribution with Lambda@Edge integration</li>
+            <li>Microsoft Entra ID authentication</li>
+            <li>Secure, HTTP-only session cookies</li>
+        </ul>
+    </div>
+    
+    <div class="card">
+        <h2>Testing Notes</h2>
+        <p>To verify that authentication is working correctly:</p>
+        <ol>
+            <li>Try accessing this page in a private/incognito window</li>
+            <li>You should be redirected to the Microsoft login page</li>
+            <li>After login, you should be redirected back here</li>
+            <li>Clear browser cookies to test the flow again</li>
+        </ol>
+    </div>
+    
+    <footer>
+        <p><small>Powered by CloudFront and Microsoft Entra ID SSO</small></p>
+        <p><small>Current time: <script>document.write(new Date().toLocaleString());</script></small></p>
+    </footer>
+</body>
+</html>

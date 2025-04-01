@@ -1,3 +1,16 @@
+- [Microsoft Entra ID SSO for CloudFront](#microsoft-entra-id-sso-for-cloudfront)
+  - [Architecture](#architecture)
+  - [How It Works](#how-it-works)
+  - [Quick Start](#quick-start)
+    - [1. Register Microsoft Entra ID Application](#1-register-microsoft-entra-id-application)
+    - [2. Store Credentials](#2-store-credentials)
+    - [3. Deploy Module](#3-deploy-module)
+    - [4. Configure CloudFront](#4-configure-cloudfront)
+  - [Module Inputs](#module-inputs)
+  - [Module Outputs](#module-outputs)
+  - [Troubleshooting](#troubleshooting)
+  - [Security Features](#security-features)
+
 # Microsoft Entra ID SSO for CloudFront
 
 A Terraform module to implement Microsoft Entra ID (Azure AD) authentication for CloudFront static websites using Lambda@Edge.
