@@ -134,6 +134,8 @@ dbt_modules/
 logs/
 #profiles.yml
 dbt_packages/
+*.duckdb
+*.duckdb.wal
 
 # Passwords 
 *.pem
@@ -600,3 +602,6 @@ package-lock.json
 .node_install*
 temp/
 artifacts/
+
+# Claude Code
+.claude

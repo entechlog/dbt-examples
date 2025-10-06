@@ -1,0 +1,50 @@
+erDiagram
+    fact_sales {
+        int sales_id PK
+        int order_item_key
+        int order_key FK
+        int product_id FK
+        date sale_date_id FK
+        int quantity_sold
+        float unit_price
+        int gross_sales
+        float discount_amount
+        int net_sales
+        float total_cost
+        string profit
+        float profit_margin_percentage
+    }
+
+    dim_date {
+        date date_id PK
+        date date_actual
+        string day_name
+        string month_name
+        string quarter
+        string year
+        boolean is_weekend
+        int fiscal_year
+        string fiscal_quarter
+    }
+
+    dim_date ||--o{ fact_sales : "sale_date_id"
+    dim_product {
+        int product_id PK
+        string product_key
+        string product_name
+        float unit_price
+        float unit_cost
+        string unit_margin
+        float margin_percentage
+    }
+
+    dim_product |o--o{ fact_sales : "product_id"
+    dim_customer {
+        int customer_id PK
+        string customer_key
+        string email
+        string full_name
+        string customer_segment
+    }
+
+    dim_customer ||--|| fact_sales : "sales_id"

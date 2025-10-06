@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dbt-model-erd Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .card h3 {
+            color: #555;
+            margin: 1.5rem 0 0.5rem;
+        }
+
+        .diagram-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .diagram-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .diagram-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+
+        .diagram-card h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .diagram-card p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .features {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .features li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        code {
+            background: #f1f3f5;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: #666;
+            border-top: 1px solid #e9ecef;
+            margin-top: 3rem;
+        }
+
+        .links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎨 dbt-model-erd Example</h1>
+        <p>Automatic Entity Relationship Diagrams for dbt Models</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>📋 About This Example</h2>
+            <p>
+                This example demonstrates how to use <strong>dbt-model-erd</strong> to automatically generate
+                Entity Relationship Diagrams (ERDs) from your dbt models. It showcases a complete e-commerce
+                data model with best practices for dimensional modeling.
+            </p>
+            <ul class="features">
+                <li>Automatic ERD generation from dbt relationships</li>
+                <li>Interactive diagrams using Mermaid.js</li>
+                <li>Real-world e-commerce schema (customers, products, orders, sales)</li>
+                <li>Best practice data warehouse layers (prep → dw)</li>
+                <li>Complete documentation and tests</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>📊 Generated ERD Diagrams</h2>
+            <p>View the automatically generated ERD diagrams for fact tables:</p>
+
+            <div class="diagram-grid">
+                <div class="diagram-card">
+                    <h4>fact_orders</h4>
+                    <p>Order-level aggregations with date relationships</p>
+                    <a href="assets/img/models/dw/fact/fact_orders_model.html" class="btn">View Diagram</a>
+                </div>
+
+                <div class="diagram-card">
+                    <h4>fact_sales</h4>
+                    <p>Line-item sales with customer, product, and date relationships</p>
+                    <a href="assets/img/models/dw/fact/fact_sales_model.html" class="btn">View Diagram</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🚀 Quick Start</h2>
+            <h3>1. Install Dependencies</h3>
+            <pre><code># Install dbt packages
+dbt deps
+
+# Install dbt-model-erd
+pip install dbt-model-erd</code></pre>
+
+            <h3>2. Load Data and Run Models</h3>
+            <pre><code># Load seed data
+dbt seed
+
+# Run models
+dbt run</code></pre>
+
+            <h3>3. Generate ERD Diagrams</h3>
+            <pre><code># Generate ERDs for fact models
+python -m dbt_erd --model-path models/dw/fact
+
+# View generated diagrams
+open assets/img/models/dw/fact/fact_orders_model.html</code></pre>
+        </div>
+
+        <div class="card">
+            <h2>🏗️ Data Model Architecture</h2>
+
+            <h3>Dimension Tables</h3>
+            <ul class="features">
+                <li><strong>dim_customer</strong> - Customer master data with segments</li>
+                <li><strong>dim_product</strong> - Product catalog with pricing and costs</li>
+                <li><strong>dim_date</strong> - Date dimension (1900-2100) using date spine</li>
+            </ul>
+
+            <h3>Fact Tables</h3>
+            <ul class="features">
+                <li><strong>fact_orders</strong> - Order-level aggregations and totals</li>
+                <li><strong>fact_sales</strong> - Line-item sales with profit analysis</li>
+            </ul>
+
+            <h3>Modeling Layers</h3>
+            <ul class="features">
+                <li><strong>prep</strong> - Staging layer with standardization and deduplication</li>
+                <li><strong>dw</strong> - Data warehouse layer with business logic</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>🔗 Resources</h2>
+            <div class="links">
+                <a href="https://github.com/entechlog/dbt-model-erd" class="btn">dbt-model-erd Repository</a>
+                <a href="https://github.com/entechlog/dbt-examples" class="btn">dbt Examples Repo</a>
+                <a href="README.md" class="btn">Full Documentation</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Generated with ❤️ using <a href="https://github.com/entechlog/dbt-model-erd">dbt-model-erd</a></p>
+        <p>Part of <a href="https://github.com/entechlog/dbt-examples">dbt-examples</a> by entechlog</p>
+    </footer>
+</body>
+</html>

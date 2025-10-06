@@ -1,0 +1,30 @@
+name: 'dbt_erd_demo'
+version: '1.0.0'
+config-version: 2
+
+profile: 'dbt-erd'
+
+model-paths: ["models"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+asset-paths: ["assets"]
+
+target-path: "target"
+clean-targets:
+    - "target"
+    - "dbt_packages"
+    - "logs"
+
+models:
+  dbt_erd_demo:
+    prep:
+      +materialized: view
+    dw:
+      +materialized: table
+
+seeds:
+  dbt_erd_demo:
+    +quote_columns: false

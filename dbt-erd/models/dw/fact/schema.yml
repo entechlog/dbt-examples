@@ -1,0 +1,106 @@
+version: 2
+models:
+- name: fact_orders
+  description: 'Order-level fact table aggregated from order items
+
+
+
+
+    ## Data Model Diagram
+
+
+    [View interactive diagram](/assets/img/dw/fact/fact_orders_model.html)
+
+    '
+  columns:
+  - name: order_id
+    description: Surrogate key for orders
+    tests:
+    - unique
+    - not_null
+  - name: order_key
+    description: Natural key for orders
+    tests:
+    - unique
+    - not_null
+  - name: order_date_id
+    description: Foreign key to dim_date
+    tests:
+    - not_null
+    - relationships:
+        to: ref('dim_date')
+        field: date_id
+  - name: order_date
+    description: Date of the order
+    tests:
+    - not_null
+  - name: item_count
+    description: Number of items in the order
+  - name: total_quantity
+    description: Total quantity of all items
+  - name: subtotal
+    description: Sum of all line totals before discount
+  - name: discount_amount
+    description: Total discount applied to order
+  - name: order_total
+    description: Final order total (subtotal - discount)
+  - name: discount_percentage
+    description: Calculated discount percentage
+- name: fact_sales
+  description: 'Line-item level sales fact table with product and profit details
+
+
+
+
+    ## Data Model Diagram
+
+
+    [View interactive diagram](/assets/img/dw/fact/fact_sales_model.html)
+
+    '
+  columns:
+  - name: sales_id
+    description: Surrogate key for sales
+    tests:
+    - unique
+    - not_null
+  - name: order_item_key
+    description: Natural key for order items
+    tests:
+    - unique
+    - not_null
+  - name: order_key
+    description: Foreign key to orders
+    tests:
+    - not_null
+  - name: product_id
+    description: Foreign key to dim_product
+    tests:
+    - relationships:
+        to: ref('dim_product')
+        field: product_id
+  - name: sale_date_id
+    description: Foreign key to dim_date
+    tests:
+    - not_null
+    - relationships:
+        to: ref('dim_date')
+        field: date_id
+  - name: quantity_sold
+    description: Quantity sold in this transaction
+    tests:
+    - not_null
+  - name: unit_price
+    description: Price per unit at time of sale
+  - name: gross_sales
+    description: Total sales before discount
+  - name: discount_amount
+    description: Discount applied
+  - name: net_sales
+    description: Sales after discount
+  - name: total_cost
+    description: Total cost of goods sold
+  - name: profit
+    description: Calculated profit (net_sales - total_cost)
+  - name: profit_margin_percentage
+    description: Profit margin as a percentage

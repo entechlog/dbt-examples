@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  dbt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dbt-erd-demo
+    volumes:
+      # Mount project files
+      - ./models:/usr/app/dbt/models
+      - ./seeds:/usr/app/dbt/seeds
+      - ./target:/usr/app/dbt/target
+      - ./assets:/usr/app/dbt/assets
+      - ./dbt_project.yml:/usr/app/dbt/dbt_project.yml
+      - ./profiles.yml:/usr/app/dbt/profiles.yml
+      - ./packages.yml:/usr/app/dbt/packages.yml
+      # DuckDB database file will be created automatically in container
+    ports:
+      # Expose dbt docs server
+      - "8080:8080"
+    working_dir: /usr/app/dbt
+    command: >
+      bash -c "
+        echo '========================================' &&
+        echo 'dbt-model-erd Demo - Starting...' &&
+        echo '========================================' &&
+        echo '' &&
+        echo 'Step 1: Installing dbt packages...' &&
+        dbt deps &&
+        echo '' &&
+        echo 'Step 2: Loading seed data...' &&
+        dbt seed &&
+        echo '' &&
+        echo 'Step 3: Running dbt models...' &&
+        dbt run &&
+        echo '' &&
+        echo 'Step 4: Running dbt tests...' &&
+        dbt test &&
+        echo '' &&
+        echo 'Step 5: Generating ERD diagrams...' &&
+        python -m dbt_erd --model-path models/dw/fact &&
+        echo '' &&
+        echo 'Step 6: Generating dbt documentation...' &&
+        dbt docs generate &&
+        echo '' &&
+        echo '========================================' &&
+        echo '✓ All tasks completed successfully!' &&
+        echo '========================================' &&
+        echo '' &&
+        echo 'Starting dbt docs server...' &&
+        echo 'Visit http://localhost:8080 in your browser' &&
+        echo '' &&
+        echo 'ERD diagrams available at:' &&
+        echo '  - assets/img/models/dw/fact/fact_orders_model.html' &&
+        echo '  - assets/img/models/dw/fact/fact_sales_model.html' &&
+        echo '' &&
+        echo 'Press Ctrl+C to stop' &&
+        echo '========================================' &&
+        dbt docs serve --port 8080
+      "
