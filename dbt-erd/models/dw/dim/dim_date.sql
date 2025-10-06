@@ -4,11 +4,12 @@
 ) }}
 
 WITH date_spine AS (
-    {{ dbt_utils.date_spine(
-        datepart="day",
-        start_date="cast('1900-01-01' as date)",
-        end_date="cast('2100-12-31' as date)"
-    ) }}
+    SELECT
+        CAST(d AS DATE) AS date_day
+    FROM (
+        SELECT generate_series::DATE AS d
+        FROM generate_series(DATE '1900-01-01', DATE '2100-12-31', INTERVAL '1 day')
+    )
 ),
 
 date_attributes AS (
