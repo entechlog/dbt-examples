@@ -6,6 +6,9 @@
 - [dbt Materialize with Kafka](https://www.entechlog.com/blog/data/how-to-setup-dbt-for-materialize-db)
 - [dbt Materialize with Redpanda](https://www.entechlog.com/blog/data/how-to-setup-dbt-for-materialize-db-with-streaming-data-from-redpanda)
 
+## Examples
+- [dbt-model-erd Example](dbt-erd/) - Comprehensive example demonstrating automatic ERD generation for dbt models
+
 ## Notes
 ### Time sync issue fix
 

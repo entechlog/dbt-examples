@@ -1,0 +1,27 @@
+erDiagram
+    fact_orders {
+        int order_id PK
+        int order_key
+        date order_date_id FK
+        date order_date
+        int item_count
+        float total_quantity
+        float subtotal
+        float discount_amount
+        float order_total
+        float discount_percentage
+    }
+
+    dim_date {
+        date date_id PK
+        date date_actual
+        string day_name
+        string month_name
+        string quarter
+        string year
+        boolean is_weekend
+        int fiscal_year
+        string fiscal_quarter
+    }
+
+    dim_date ||--o{ fact_orders : "order_date_id"

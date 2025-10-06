@@ -1,0 +1,16 @@
+customer_id,first_name,last_name,email,phone,address,city,state,postal_code,country,customer_segment,registration_date,is_active
+1,John,Smith,john.smith@email.com,555-0101,123 Main St,New York,NY,10001,USA,Premium,2023-01-15,true
+2,Emma,Johnson,emma.j@email.com,555-0102,456 Oak Ave,Los Angeles,CA,90001,USA,Standard,2023-02-20,true
+3,Michael,Williams,m.williams@email.com,555-0103,789 Pine Rd,Chicago,IL,60601,USA,Premium,2023-01-25,true
+4,Sophia,Brown,sophia.b@email.com,555-0104,321 Elm St,Houston,TX,77001,USA,Standard,2023-03-10,true
+5,James,Davis,james.davis@email.com,555-0105,654 Maple Dr,Phoenix,AZ,85001,USA,VIP,2023-01-30,true
+6,Olivia,Miller,olivia.m@email.com,555-0106,987 Cedar Ln,Philadelphia,PA,19101,USA,Standard,2023-04-05,true
+7,William,Wilson,w.wilson@email.com,555-0107,147 Birch Ave,San Antonio,TX,78201,USA,Premium,2023-02-15,true
+8,Ava,Moore,ava.moore@email.com,555-0108,258 Spruce St,San Diego,CA,92101,USA,Standard,2023-03-20,false
+9,Benjamin,Taylor,ben.taylor@email.com,555-0109,369 Walnut Rd,Dallas,TX,75201,USA,VIP,2023-01-10,true
+10,Isabella,Anderson,isabella.a@email.com,555-0110,741 Ash Dr,San Jose,CA,95101,USA,Premium,2023-02-28,true
+11,Lucas,Thomas,lucas.t@email.com,555-0111,852 Poplar Ln,Austin,TX,78701,USA,Standard,2023-04-15,true
+12,Mia,Jackson,mia.jackson@email.com,555-0112,963 Cherry Ave,Jacksonville,FL,32099,USA,Standard,2023-03-05,true
+13,Henry,White,h.white@email.com,555-0113,159 Willow St,Fort Worth,TX,76101,USA,Premium,2023-02-10,true
+14,Charlotte,Harris,charlotte.h@email.com,555-0114,357 Hickory Rd,Columbus,OH,43004,USA,VIP,2023-01-20,true
+15,Alexander,Martin,alex.martin@email.com,555-0115,486 Sycamore Dr,Charlotte,NC,28201,USA,Standard,2023-03-25,true

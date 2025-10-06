@@ -1,0 +1,4 @@
+protobuf==4.25.3
+dbt-core==1.7.4
+dbt-duckdb==1.7.1
+dbt-model-erd

@@ -1,0 +1,25 @@
+# dbt-model-erd Configuration File
+# This file contains configuration options for generating ERD diagrams
+
+# Mermaid theme options: default, neutral, forest, dark, base
+theme: default
+
+# Diagram direction: LR (left-right) or TB (top-bottom)
+direction: LR
+
+# Column display settings
+show_all_columns: true
+max_columns: 15
+
+# Output paths
+output_dir: assets/img
+mermaid_extension: .mmd
+html_extension: .html
+
+# Model path (can be overridden via CLI)
+model_path: models/dw/fact
+
+# Advanced options
+include_descriptions: true
+update_schema_yml: true
+verbose: false

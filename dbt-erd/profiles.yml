@@ -1,0 +1,7 @@
+dbt-erd:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: 'target/dbt_erd.duckdb'
+      threads: 4

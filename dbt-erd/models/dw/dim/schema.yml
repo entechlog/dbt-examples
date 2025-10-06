@@ -1,0 +1,85 @@
+version: 2
+
+models:
+  - name: dim_customer
+    description: Customer dimension table containing all customer attributes
+    columns:
+      - name: customer_id
+        description: Surrogate key for customer dimension
+        tests:
+          - unique
+          - not_null
+      - name: customer_key
+        description: Natural key from source system
+        tests:
+          - unique
+          - not_null
+      - name: email
+        description: Customer email address
+        tests:
+          - not_null
+      - name: full_name
+        description: Customer full name (first + last)
+      - name: customer_segment
+        description: Customer segment (Standard, Premium, VIP)
+        tests:
+          - accepted_values:
+              values: ['Standard', 'Premium', 'VIP']
+
+  - name: dim_product
+    description: Product dimension table containing all product attributes
+    columns:
+      - name: product_id
+        description: Surrogate key for product dimension
+        tests:
+          - unique
+          - not_null
+      - name: product_key
+        description: Natural key from source system
+        tests:
+          - unique
+          - not_null
+      - name: product_name
+        description: Product name
+        tests:
+          - not_null
+      - name: unit_price
+        description: Current selling price per unit
+        tests:
+          - not_null
+      - name: unit_cost
+        description: Cost per unit
+        tests:
+          - not_null
+      - name: unit_margin
+        description: Calculated margin (price - cost)
+      - name: margin_percentage
+        description: Calculated margin percentage
+
+  - name: dim_date
+    description: Date dimension table with date attributes from 1900 to 2100
+    columns:
+      - name: date_id
+        description: Primary key in YYYYMMDD format
+        tests:
+          - unique
+          - not_null
+      - name: date_actual
+        description: Actual date value
+        tests:
+          - unique
+          - not_null
+      - name: day_name
+        description: Name of the day (Monday, Tuesday, etc.)
+      - name: month_name
+        description: Name of the month (January, February, etc.)
+      - name: quarter
+        description: Calendar quarter (1-4)
+      - name: year
+        description: Calendar year
+      - name: is_weekend
+        description: Flag indicating if the date is a weekend
+      - name: fiscal_year
+        description: Fiscal year
+      - name: fiscal_quarter
+        description: Fiscal quarter (1-4)
